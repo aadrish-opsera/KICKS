@@ -142,7 +142,7 @@ describe('createHealthHandler', () => {
     expect(res.statusCode).toBe(200)
     expect(res.headers['Cache-Control']).toBe('no-store')
     expect(res.headers['Content-Type']).toBe('application/json')
-    expect(JSON.stringify(res.body)).not.toMatch(/GEMINI_API_KEY|SNEAKER_DB_API_KEY|sk-|AIza/)
+    expect(JSON.stringify(res.body)).not.toMatch(/GROQ_API_KEY|GEMINI_API_KEY|SNEAKER_DB_API_KEY|gsk_|sk-|AIza/)
     expect(res.body).toMatchObject({
       status: 'healthy',
       sneakerApi: 'up',
