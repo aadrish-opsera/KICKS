@@ -31,10 +31,27 @@ describe('QuotaTracker', () => {
     expect(tracker.check()).toBe(true)
   })
 
-  it('manual reset clears usage', () => {
-    const tracker = new QuotaTracker({ dailyLimit: 3 })
-    tracker.increment(3)
-    tracker.reset()
-    expect(tracker.remaining()).toBe(3)
+  it('exposes getStatus with nearExhaustion and resetAtUtc', () => {
+    const tracker = new QuotaTracker({
+      dailyLimit: 10,
+      now: () => new Date('2026-07-20T12:00:00.000Z'),
+    })
+    tracker.recordRequest(8)
+    const status = tracker.getStatus()
+    expect(status).toMatchObject({
+      used: 8,
+      remaining: 2,
+      limit: 10,
+      nearExhaustion: true,
+      isExhausted: false,
+    })
+    expect(status.resetAtUtc).toBe('2026-07-21T00:00:00.000Z')
+  })
+
+  it('canMakeRequest mirrors check()', () => {
+    const tracker = new QuotaTracker({ dailyLimit: 1 })
+    expect(tracker.canMakeRequest()).toBe(true)
+    tracker.recordRequest()
+    expect(tracker.canMakeRequest()).toBe(false)
   })
 })

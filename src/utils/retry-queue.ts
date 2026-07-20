@@ -3,6 +3,11 @@ export type RetryQueueConfig = {
   maxBudgetMs: number
   sleep: (ms: number) => Promise<void>
   now: () => number
+  onRetry?: (event: {
+    attempt: number
+    delayMs: number
+    error: unknown
+  }) => void
 }
 
 const DEFAULT_DELAYS = [200, 400, 800, 1600] as const
@@ -12,8 +17,22 @@ export type RetryContext = {
   elapsedMs: number
 }
 
+export class RetryExhaustedError extends Error {
+  readonly code = 'RETRY_EXHAUSTED' as const
+  readonly retryCount: number
+  readonly lastError: unknown
+
+  constructor(retryCount: number, lastError: unknown) {
+    super('Retry budget exhausted')
+    this.name = 'RetryExhaustedError'
+    this.retryCount = retryCount
+    this.lastError = lastError
+  }
+}
+
 /**
  * Compressed retry queue with exponential backoff and a hard time budget.
+ * Cold starts are fine — this utility is stateless per invocation.
  */
 export class CompressedRetryQueue {
   private readonly config: RetryQueueConfig
@@ -31,6 +50,7 @@ export class CompressedRetryQueue {
   async run<T>(
     operation: (ctx: RetryContext) => Promise<T>,
     shouldRetry: (error: unknown) => boolean,
+    options: { remainingTimeoutMs?: number } = {},
   ): Promise<{ value: T; retryCount: number }> {
     const startedAt = this.config.now()
     let attempt = 0
@@ -52,18 +72,35 @@ export class CompressedRetryQueue {
         }
 
         const delay = this.config.delaysMs[attempt] ?? 0
-        const remaining = this.config.maxBudgetMs - (this.config.now() - startedAt)
-        if (remaining <= 0) {
+        const budgetRemaining =
+          this.config.maxBudgetMs - (this.config.now() - startedAt)
+        const hardRemaining = options.remainingTimeoutMs
+        if (budgetRemaining <= 0) {
+          break
+        }
+        if (hardRemaining !== undefined && hardRemaining < delay) {
           break
         }
 
-        await this.config.sleep(Math.min(delay, remaining))
+        this.config.onRetry?.({ attempt: attempt + 1, delayMs: delay, error })
+        await this.config.sleep(Math.min(delay, budgetRemaining))
         attempt += 1
       }
     }
 
-    throw lastError instanceof Error
-      ? lastError
-      : new Error('Retry budget exhausted')
+    throw new RetryExhaustedError(attempt, lastError)
   }
+}
+
+/** Default transient HTTP/network retry predicate. */
+export function isTransientError(error: unknown): boolean {
+  if (!error || typeof error !== 'object') {
+    return false
+  }
+  const status = (error as { status?: number }).status
+  if (typeof status === 'number') {
+    return status === 429 || status >= 500
+  }
+  const retryable = (error as { retryable?: boolean }).retryable
+  return retryable === true
 }
