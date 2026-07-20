@@ -1,0 +1,83 @@
+.root {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+  width: 100%;
+}
+
+.label {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  min-height: var(--touch-target-min);
+  font-size: var(--font-size-md);
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.labelIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.5rem;
+  height: 1.5rem;
+}
+
+.textarea {
+  width: 100%;
+  min-height: calc(var(--touch-target-min) * 2);
+  padding: var(--spacing-md);
+  border: 1px solid var(--color-secondary);
+  border-radius: var(--border-radius-md);
+  background-color: var(--color-background);
+  color: var(--color-text);
+  resize: vertical;
+}
+
+.textarea:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+.textarea:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.meta {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+}
+
+.counter {
+  font-size: var(--font-size-sm);
+  color: var(--color-secondary);
+}
+
+.error {
+  margin: 0;
+  font-size: var(--font-size-sm);
+  color: var(--color-error);
+}
+
+.errorPlaceholder {
+  min-height: 1.25rem;
+}
+
+@media (min-width: 768px) {
+  .textarea {
+    font-size: var(--font-size-md);
+    padding: var(--spacing-lg);
+  }
+
+  .label {
+    font-size: var(--font-size-lg);
+  }
+}
+
+@media (min-width: 1024px) {
+  .root {
+    max-width: 640px;
+  }
+}

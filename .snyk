@@ -1,0 +1,6 @@
+# Snyk (https://snyk.io) policy file
+# Ignore entries must include expiration dates. See VULNERABILITY_TRIAGE.md.
+
+version: v1.25.0
+ignore: {}
+patch: {}

@@ -76,7 +76,7 @@ export function createRecommendHandler(deps: Partial<RecommendHandlerDeps> = {})
 
     let sneakerApiSource = 'none'
     let geminiStatus = 'skipped'
-    let retryCount = 0
+    const retryCount = 0
 
     try {
       const body = parseBody(req.body)

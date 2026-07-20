@@ -1,0 +1,49 @@
+/*
+ * Design tokens for KICKS (mobile-first).
+ * Breakpoint custom properties are documentation-only — @media must use literal px.
+ */
+
+:root {
+  --breakpoint-mobile: 320px;
+  --breakpoint-tablet: 768px;
+  --breakpoint-desktop: 1024px;
+
+  /*
+   * Colors — WCAG AA against --color-background (#FFFFFF):
+   * primary #0B3D91 ~7.4:1, secondary #334155 ~8.6:1, text #0F172A ~16:1,
+   * error #B42318 ~5.9:1, success #027A48 ~5.4:1, focus #0B3D91 ~7.4:1
+   */
+  --color-primary: #0b3d91;
+  --color-secondary: #334155;
+  --color-error: #b42318;
+  --color-success: #027a48;
+  --color-background: #ffffff;
+  --color-text: #0f172a;
+  --color-focus: #0b3d91;
+  --color-surface: #f8fafc;
+
+  --spacing-unit: 0.25rem;
+  --spacing-xs: 4px;
+  --spacing-sm: 8px;
+  --spacing-md: 16px;
+  --spacing-lg: 24px;
+  --spacing-xl: 32px;
+
+  --font-size-sm: clamp(0.8125rem, 0.75rem + 0.2vw, 0.875rem);
+  --font-size-md: clamp(1rem, 0.95rem + 0.25vw, 1.0625rem);
+  --font-size-lg: clamp(1.125rem, 1rem + 0.5vw, 1.25rem);
+  --font-size-xl: clamp(1.35rem, 1.15rem + 0.8vw, 1.75rem);
+
+  --touch-target-min: 44px;
+  --touch-target-gap: 8px;
+  --border-radius-sm: 4px;
+  --border-radius-md: 8px;
+  --content-max-width: 1200px;
+
+  /* Alias used by some layout docs */
+  --font-size-base: var(--font-size-md);
+
+  --shadow-sm: 0 1px 2px rgb(15 23 42 / 8%);
+  --shadow-md: 0 4px 12px rgb(15 23 42 / 12%);
+  --shadow-lg: 0 12px 24px rgb(15 23 42 / 16%);
+}

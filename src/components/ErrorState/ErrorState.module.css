@@ -1,0 +1,48 @@
+.root {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-md);
+  width: 100%;
+  max-width: 500px;
+  margin-inline: auto;
+  padding: var(--spacing-lg);
+  text-align: center;
+}
+
+.icon {
+  font-size: 2.5rem;
+  line-height: 1;
+}
+
+.title {
+  margin: 0;
+  font-size: var(--font-size-lg);
+  color: var(--color-text);
+}
+
+.message {
+  margin: 0;
+  font-size: var(--font-size-md);
+  color: var(--color-secondary);
+}
+
+.retry {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-sm);
+  min-width: var(--touch-target-min);
+  min-height: var(--touch-target-min);
+  padding-inline: var(--spacing-lg);
+  border: none;
+  border-radius: var(--border-radius-md);
+  background-color: var(--color-primary);
+  color: var(--color-background);
+  font-size: var(--font-size-md);
+}
+
+.retry:focus-visible {
+  outline: 2px solid var(--color-secondary);
+  outline-offset: 2px;
+}

@@ -3,6 +3,7 @@ node_modules/
 
 # Build
 dist/
+.vercel/
 
 # Env
 .env
@@ -17,6 +18,9 @@ coverage/
 # Logs / editor
 *.log
 .DS_Store
+
+# Lighthouse CI output
+.lighthouseci/
 
 # Forge-managed local artifacts (never commit)
 .forge-commit-ready

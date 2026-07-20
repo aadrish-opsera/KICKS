@@ -1,0 +1,8 @@
+#!/usr/bin/env sh
+# Fast secret scan on staged files (CI still runs full-history Gitleaks).
+if command -v gitleaks >/dev/null 2>&1; then
+  gitleaks protect --staged --config .gitleaks.toml --redact
+else
+  echo "gitleaks not installed locally — skipping pre-commit secret scan (CI enforces it)."
+fi
+npm run check:sensitive-files

@@ -1,26 +1,22 @@
 /*
  * Responsive breakpoint patterns (mobile-first).
  *
- * Token reference (defined on :root in global.css):
+ * Token reference (defined in tokens.css):
  *   --breakpoint-mobile:  320px  (base styles — no media query required)
  *   --breakpoint-tablet:  768px
  *   --breakpoint-desktop: 1024px
  *
  * CSS custom properties cannot be used inside @media queries, so use the
- * literal pixel values below. Keep them in sync with the tokens in global.css.
+ * literal pixel values below. Keep them in sync with tokens.css.
  *
  * Base (mobile, 320px+):
  *   .example { ... }
  *
  * Tablet and up:
- *   @media (min-width: 768px) {
- *     .example { ... }
- *   }
+ *   @media (min-width: 768px) { .example { ... } }
  *
  * Desktop and up:
- *   @media (min-width: 1024px) {
- *     .example { ... }
- *   }
+ *   @media (min-width: 1024px) { .example { ... } }
  */
 
 .container {
@@ -39,7 +35,7 @@
 
 @media (min-width: 1024px) {
   .container {
-    max-width: 960px;
+    max-width: var(--content-max-width);
     padding-inline: var(--spacing-xl);
   }
 }

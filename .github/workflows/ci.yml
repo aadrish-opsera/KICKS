@@ -1,0 +1,121 @@
+name: CI
+
+on:
+  push:
+    branches: [main, 'feature/**', 'fix/**']
+  pull_request:
+    branches: [main]
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  quality:
+    name: Build / Lint / Type-check / Test
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+
+      - name: NPM Build policy gate
+        run: npm run check:node-modules
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Type-check
+        run: npm run type-check
+
+      - name: Build
+        run: npm run build
+
+      - name: Test with coverage
+        run: npm run test:coverage
+
+  security:
+    name: Security Scan
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    needs: quality
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: npm audit (high+)
+        run: npm run audit:check
+
+      - name: Snyk SCA (optional)
+        continue-on-error: true
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        run: npm run audit:snyk
+
+      - name: Gitleaks secret scan
+        uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Sensitive file check
+        run: npm run check:sensitive-files
+
+  deploy:
+    name: Deploy to Vercel
+    needs: [quality, security]
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    # Job-level `if:` cannot reference `secrets`; map secrets to env then gate steps.
+    env:
+      VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+      VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+      VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+    steps:
+      - name: Skip when Vercel not configured
+        if: env.VERCEL_TOKEN == ''
+        run: echo "VERCEL_TOKEN not set; skipping deploy."
+
+      - name: Checkout
+        if: env.VERCEL_TOKEN != ''
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        if: env.VERCEL_TOKEN != ''
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+
+      - name: Install dependencies
+        if: env.VERCEL_TOKEN != ''
+        run: npm ci
+
+      - name: Deploy production
+        if: env.VERCEL_TOKEN != '' && github.event_name == 'push' && github.ref == 'refs/heads/main'
+        run: npx vercel --prod --token "$VERCEL_TOKEN" --yes
+
+      - name: Deploy preview
+        if: env.VERCEL_TOKEN != '' && (github.event_name == 'pull_request' || (github.event_name == 'push' && github.ref != 'refs/heads/main'))
+        run: npx vercel --token "$VERCEL_TOKEN" --yes

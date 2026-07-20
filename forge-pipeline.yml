@@ -1,0 +1,74 @@
+# Forge Shipping Engine pipeline — KICKS
+# Stages: source → pre-check → build → lint → type-check → test → security → deploy
+
+name: kicks-ci-cd
+version: 1
+
+source:
+  triggers:
+    - event: push
+      branches: [main]
+      deploy_target: prod
+    - event: pull_request
+      branches: [main]
+      deploy_target: staging
+    - event: push
+      branches: ['feature/**', 'fix/**']
+      deploy_target: dev
+
+stages:
+  - name: pre-check
+    description: NPM Build policy — fail if node_modules is tracked
+    steps:
+      - run: npm run check:node-modules
+
+  - name: build
+    description: Deterministic install and Vite production build
+    steps:
+      - run: npm ci
+      - run: npm run build
+
+  - name: lint
+    description: ESLint with TypeScript strict rules (zero warnings)
+    steps:
+      - run: npm run lint
+
+  - name: type-check
+    description: TypeScript project references type-check
+    steps:
+      - run: npm run type-check
+
+  - name: test
+    description: Vitest with 80% coverage gates
+    steps:
+      - run: npm run test:coverage
+
+  - name: security
+    description: Parallel SCA + secret detection gates
+    parallel: true
+    steps:
+      - name: npm-audit
+        run: npm run audit:check
+      - name: snyk-scan
+        run: npm run audit:snyk
+        continueOnAuthOrQuotaFailure: true
+      - name: gitleaks-scan
+        run: gitleaks detect --source . --config .gitleaks.toml --redact --verbose
+      - name: sensitive-file-check
+        run: npm run check:sensitive-files
+
+  - name: deploy
+    description: Vercel deploy by branch context
+    steps:
+      - name: deploy-prod
+        when: deploy_target == prod
+        run: npx vercel --prod --token "$VERCEL_TOKEN" --yes
+      - name: deploy-preview
+        when: deploy_target in [staging, dev]
+        run: npx vercel --token "$VERCEL_TOKEN" --yes
+
+secrets:
+  - VERCEL_TOKEN
+  - VERCEL_ORG_ID
+  - VERCEL_PROJECT_ID
+  - SNYK_TOKEN

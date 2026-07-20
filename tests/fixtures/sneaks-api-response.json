@@ -1,0 +1,102 @@
+[
+  {
+    "styleID": "sku-101",
+    "shoeName": "Dunk Low Retro",
+    "brand": "Nike",
+    "colorway": "Panda",
+    "retailPrice": 110,
+    "thumbnail": "https://example.com/dunk.jpg",
+    "lowestResellPrice": { "stockX": 125 },
+    "resellLinks": { "stockX": "https://stockx.com/dunk" }
+  },
+  {
+    "styleID": "sku-102",
+    "shoeName": "Samba OG",
+    "brand": "Adidas",
+    "colorway": "White/Black",
+    "retailPrice": 100,
+    "thumbnail": "https://example.com/samba.jpg",
+    "lowestResellPrice": { "goat": 115 },
+    "resellLinks": { "goat": "https://goat.com/samba" }
+  },
+  {
+    "styleID": "sku-103",
+    "shoeName": "550",
+    "brand": "New Balance",
+    "colorway": "Grey",
+    "retailPrice": 120,
+    "thumbnail": "https://example.com/550.jpg",
+    "lowestResellPrice": null,
+    "resellLinks": { "stockX": "https://stockx.com/550" }
+  },
+  {
+    "styleID": "sku-104",
+    "shoeName": "Jazz Vintage",
+    "brand": "Saucony",
+    "colorway": "Blue/Yellow",
+    "retailPrice": 90,
+    "thumbnail": "https://example.com/jazz.jpg",
+    "lowestResellPrice": { "stockX": 95 },
+    "resellLinks": { "stockX": "https://stockx.com/jazz" }
+  },
+  {
+    "styleID": "sku-105",
+    "shoeName": "Old Skool",
+    "brand": "Vans",
+    "colorway": "Black/White",
+    "retailPrice": 70,
+    "thumbnail": "https://example.com/oldskool.jpg",
+    "lowestResellPrice": null,
+    "resellLinks": { "goat": "https://goat.com/oldskool" }
+  },
+  {
+    "styleID": "sku-106",
+    "shoeName": "Chuck 70",
+    "brand": "Converse",
+    "colorway": "White",
+    "retailPrice": 85,
+    "thumbnail": "https://example.com/chuck.jpg",
+    "lowestResellPrice": { "stockX": 88 },
+    "resellLinks": { "stockX": "https://stockx.com/chuck" }
+  },
+  {
+    "styleID": "sku-107",
+    "shoeName": "Blazer Mid 77",
+    "brand": "Nike",
+    "colorway": "White/Black",
+    "retailPrice": 105,
+    "thumbnail": "https://example.com/blazer.jpg",
+    "lowestResellPrice": null,
+    "resellLinks": { "goat": "https://goat.com/blazer" }
+  },
+  {
+    "styleID": "sku-108",
+    "shoeName": "Forum Low",
+    "brand": "Adidas",
+    "colorway": "White/Blue",
+    "retailPrice": 100,
+    "thumbnail": "https://example.com/forum.jpg",
+    "lowestResellPrice": { "stockX": 110 },
+    "resellLinks": { "stockX": "https://stockx.com/forum" }
+  },
+  {
+    "styleID": "sku-109",
+    "shoeName": "Air Force 1",
+    "brand": "Nike",
+    "colorway": "Triple White",
+    "retailPrice": 110,
+    "thumbnail": "https://example.com/af1.jpg",
+    "lowestResellPrice": null,
+    "resellLinks": { "stockX": "https://stockx.com/af1" }
+  },
+  {
+    "styleID": "sku-110",
+    "shoeName": "Gazelle",
+    "brand": "Adidas",
+    "colorway": "Blue",
+    "retailPrice": 90,
+    "thumbnail": "https://example.com/gazelle.jpg",
+    "lowestResellPrice": { "goat": 92 },
+    "resellLinks": { "goat": "https://goat.com/gazelle" }
+  }
+]

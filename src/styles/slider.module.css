@@ -1,0 +1,59 @@
+/*
+ * Shared range-input thumb styles (44x44px) for WebKit and Firefox.
+ * Import and apply `.range` to any <input type="range"> control.
+ */
+
+.range {
+  width: 100%;
+  height: var(--touch-target-min);
+  margin: 0;
+  background: transparent;
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+}
+
+.range::-webkit-slider-runnable-track {
+  height: 8px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--color-secondary) 25%, white);
+}
+
+.range::-webkit-slider-thumb {
+  appearance: none;
+  -webkit-appearance: none;
+  width: var(--touch-target-min);
+  height: var(--touch-target-min);
+  margin-top: calc((8px - var(--touch-target-min)) / 2);
+  border: 2px solid var(--color-primary);
+  border-radius: 999px;
+  background: var(--color-background);
+  box-shadow: var(--shadow-sm);
+  cursor: pointer;
+}
+
+.range::-moz-range-track {
+  height: 8px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--color-secondary) 25%, white);
+}
+
+.range::-moz-range-thumb {
+  width: var(--touch-target-min);
+  height: var(--touch-target-min);
+  border: 2px solid var(--color-primary);
+  border-radius: 999px;
+  background: var(--color-background);
+  box-shadow: var(--shadow-sm);
+  cursor: pointer;
+}
+
+.range:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
+}
+
+.range:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
