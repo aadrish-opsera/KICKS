@@ -15,6 +15,8 @@ export default tseslint.config(
       'lighthouserc.cjs',
       'scripts/**',
       'middleware.ts',
+      'playwright-report/**',
+      'test-results/**',
     ],
   },
   js.configs.recommended,

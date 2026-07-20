@@ -53,3 +53,12 @@ Runtime helpers:
 | `/` | Home Page |
 | `/results` | Results Page |
 | `/comparison` | Comparison Page |
+
+## End-to-end tests (Playwright)
+
+```bash
+npx playwright install
+npm run test:e2e
+```
+
+E2E suites live in `e2e/` and mock `/api/recommend` via Playwright route interception (see `e2e/fixtures/`). Projects: Chromium, Firefox, WebKit, mobile Chrome (iPhone SE), and a custom 320px viewport.
