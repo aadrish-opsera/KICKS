@@ -62,3 +62,28 @@ npm run test:e2e
 ```
 
 E2E suites live in `e2e/` and mock `/api/recommend` via Playwright route interception (see `e2e/fixtures/`). Projects: Chromium, Firefox, WebKit, mobile Chrome (iPhone SE), and a custom 320px viewport.
+
+Local smoke (Playwright library API, avoids hung CLI on some Windows setups):
+
+```bash
+npm run dev -- --host 127.0.0.1 --port 5173
+npm run test:e2e:smoke
+```
+
+## Performance tests
+
+NFRs: `/api/recommend` p50 ≤ 4s / p95 ≤ 8s (mocked APIs are lower), submit → results ≤ 6s, filter interactions ≤ 100ms, JS bundle ≤ 200KB gzip, Lighthouse TTI ≤ 3s on simulated 4G, Accessibility ≥ 90 / Performance ≥ 80 / Best Practices ≥ 80.
+
+```bash
+npm run test:perf:api
+npm run build && npm run test:perf:bundle
+npm run build && npm run test:perf:client
+npm run build && npm run test:perf:lighthouse
+# or after build: npm run test:perf  (api → bundle → client → lighthouse)
+```
+
+- `test:perf:api` — Vitest latency suite (`tests/performance/api-latency.test.ts`)
+- `test:perf:client` — Playwright library runner (`scripts/run-perf-client.mjs`; avoids hung CLI)
+- `test:perf:bundle` — gzipped JS budget under `dist/assets`
+- `test:perf:lighthouse` — LHCI via `lighthouserc.cjs` (simulated 4G, 3 runs, median TTI ≤3s)
+- `test:perf` — runs api + bundle + client + lighthouse sequentially (build first)
