@@ -1,8 +1,11 @@
 import { useState, type ReactElement } from 'react'
+import { Eye } from 'lucide-react'
 import type { Sneaker } from '../../shared/types/sneaker'
 import { sanitizeInput } from '../../utils/sanitize'
 import placeholderImage from '../../assets/sneaker-placeholder.svg'
 import { RESULTS } from '../../constants/uiText'
+import ActionButton from '../shared/ActionButton/ActionButton'
+import Image from '../shared/Image/Image'
 import styles from './SneakerCard.module.css'
 
 export type SneakerCardProps = {
@@ -17,7 +20,7 @@ export type SneakerCardProps = {
 
 function formatPrice(price: number | undefined): string {
   if (price === undefined || price <= 0) {
-    return 'Price unavailable'
+    return RESULTS.priceUnavailable
   }
   return new Intl.NumberFormat('en-US', {
     style: 'currency',
@@ -39,7 +42,7 @@ function SneakerCard({
   const imageSrc = imageFailed || !sneaker.imageUrl ? placeholderImage : sneaker.imageUrl
   const explanation = sneaker.aiExplanation
     ? sanitizeInput(sneaker.aiExplanation)
-    : 'No explanation available'
+    : RESULTS.noExplanation
   const altText = `${sneaker.name} - ${sneaker.brand}`
 
   const handleImageError = (): void => {
@@ -69,12 +72,12 @@ function SneakerCard({
               onChange={handleToggle}
               aria-label={`Select ${sneaker.name} for comparison`}
             />
-            <span>Compare</span>
+            <span>{RESULTS.compareToggle}</span>
           </label>
         ) : null}
       </div>
       <div className={styles.imageWrap}>
-        <img
+        <Image
           className={styles.image}
           src={imageSrc}
           alt={altText}
@@ -90,13 +93,13 @@ function SneakerCard({
         <p className={styles.price}>{formatPrice(sneaker.retailPrice)}</p>
         <p className={styles.explanation}>{explanation}</p>
         {onViewDetails ? (
-          <button
-            type="button"
+          <ActionButton
             className={styles.details}
+            variant="secondary"
+            icon={Eye}
+            label={RESULTS.viewDetailsButton}
             onClick={() => onViewDetails(sneaker)}
-          >
-            {RESULTS.viewDetailsButton}
-          </button>
+          />
         ) : null}
         {sneaker.resaleLinks.length > 0 ? (
           <ul className={styles.links}>
@@ -115,7 +118,7 @@ function SneakerCard({
             ))}
           </ul>
         ) : (
-          <p className={styles.noLinks}>No resale links available</p>
+          <p className={styles.noLinks}>{RESULTS.noResaleLinks}</p>
         )}
       </div>
     </article>

@@ -39,4 +39,11 @@
   --border-radius-sm: 4px;
   --border-radius-md: 8px;
   --content-max-width: 1200px;
+
+  /* Alias used by some layout docs */
+  --font-size-base: var(--font-size-md);
+
+  --shadow-sm: 0 1px 2px rgb(15 23 42 / 8%);
+  --shadow-md: 0 4px 12px rgb(15 23 42 / 12%);
+  --shadow-lg: 0 12px 24px rgb(15 23 42 / 16%);
 }

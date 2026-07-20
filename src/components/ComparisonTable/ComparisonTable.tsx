@@ -1,8 +1,10 @@
 import { useState, type ReactElement } from 'react'
 import type { Sneaker } from '../../shared/types/sneaker'
 import placeholderImage from '../../assets/sneaker-placeholder.svg'
+import { COMPARISON } from '../../constants/uiText'
 import { formatCurrency } from '../../utils/formatCurrency'
 import { sanitizeInput } from '../../utils/sanitize'
+import Image from '../shared/Image/Image'
 import styles from './ComparisonTable.module.css'
 
 export type ComparisonTableProps = {
@@ -24,7 +26,7 @@ function ComparisonTable({
     >
       {!aiRankingAvailable ? (
         <p className={styles.degraded} role="status">
-          AI insights temporarily unavailable
+          {COMPARISON.aiUnavailable}
         </p>
       ) : null}
 
@@ -82,7 +84,7 @@ function ComparisonTable({
               <div key={`rating-${sneaker.id}`} className={styles.cell} role="cell">
                 {aiRankingAvailable && sneaker.aiRating != null
                   ? String(sneaker.aiRating)
-                  : 'AI insights temporarily unavailable'}
+                  : COMPARISON.aiUnavailable}
               </div>
             ))}
           </AttributeRow>
@@ -92,7 +94,7 @@ function ComparisonTable({
               <div key={`why-${sneaker.id}`} className={`${styles.cell} ${styles.explanation}`} role="cell">
                 {aiRankingAvailable && sneaker.aiExplanation
                   ? sanitizeInput(sneaker.aiExplanation)
-                  : 'AI insights temporarily unavailable'}
+                  : COMPARISON.aiUnavailable}
               </div>
             ))}
           </AttributeRow>
@@ -127,7 +129,7 @@ function ComparisonImage({ sneaker }: { sneaker: Sneaker }): ReactElement {
   const src = failed || !sneaker.imageUrl ? placeholderImage : sneaker.imageUrl
   return (
     <div className={styles.cell} role="cell">
-      <img
+      <Image
         className={styles.image}
         src={src}
         alt={`${sneaker.name} by ${sneaker.brand}`}

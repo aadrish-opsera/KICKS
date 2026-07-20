@@ -1,6 +1,7 @@
 import {
   useCallback,
   useMemo,
+  type ChangeEvent,
   type KeyboardEvent,
   type ReactElement,
 } from 'react'
@@ -11,6 +12,8 @@ import {
   formatBudgetLabel,
   type BudgetRange,
 } from '../../types/budget'
+import { HOME } from '../../constants/uiText'
+import sliderStyles from '../../styles/slider.module.css'
 import styles from './BudgetSelector.module.css'
 
 export type BudgetSelectorProps = {
@@ -71,8 +74,22 @@ function BudgetSelector({
   return (
     <div className={styles.root}>
       <p className={styles.label} id="budget-selector-label">
-        About how much do you want to spend?
+        {HOME.budgetLabel}
       </p>
+      <input
+        type="range"
+        className={`${sliderStyles.range} ${styles.slider}`}
+        min={0}
+        max={BUDGET_RANGES.length - 1}
+        step={1}
+        value={selectedIndex}
+        disabled={disabled}
+        aria-labelledby="budget-selector-label"
+        aria-valuetext={formatBudgetLabel(BUDGET_RANGES[selectedIndex] ?? DEFAULT_BUDGET)}
+        onChange={(event: ChangeEvent<HTMLInputElement>) => {
+          selectAt(Number(event.target.value))
+        }}
+      />
       <div
         className={styles.group}
         role="radiogroup"

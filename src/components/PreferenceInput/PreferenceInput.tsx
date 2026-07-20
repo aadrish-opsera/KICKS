@@ -1,4 +1,5 @@
 import { useId, useMemo, type ChangeEvent, type ReactElement } from 'react'
+import { HOME } from '../../constants/uiText'
 import { sanitizeInput } from '../../utils/sanitize'
 import styles from './PreferenceInput.module.css'
 
@@ -37,10 +38,10 @@ function PreferenceInput({
       return null
     }
     if (isTooShort) {
-      return 'Please describe what you are looking for (at least 3 characters)'
+      return HOME.validationTooShort
     }
     if (isTooLong) {
-      return `Please keep your description under ${PREFERENCE_MAX_LENGTH} characters`
+      return HOME.validationTooLong
     }
     return null
   }, [isEmpty, isTooShort, isTooLong])
@@ -67,7 +68,7 @@ function PreferenceInput({
         <span className={styles.labelIcon} aria-hidden="true">
           🔎
         </span>
-        What kind of sneakers do you want?
+        {HOME.inputLabel}
       </label>
       <textarea
         id={inputId}
@@ -77,7 +78,7 @@ function PreferenceInput({
         disabled={disabled}
         rows={4}
         maxLength={PREFERENCE_MAX_LENGTH}
-        placeholder="Try: blue Nike runners under $100"
+        placeholder={HOME.inputPlaceholder}
         aria-invalid={Boolean(validationMessage)}
         aria-describedby={`${counterId}${validationMessage ? ` ${errorId}` : ''}`}
       />
