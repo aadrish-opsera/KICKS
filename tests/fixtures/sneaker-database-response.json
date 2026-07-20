@@ -1,0 +1,102 @@
+[
+  {
+    "id": "snk-001",
+    "shoeName": "Air Zoom Pegasus",
+    "brand": "Nike",
+    "colorway": "Black/White",
+    "retailPrice": 120,
+    "lowestResellPrice": { "stockX": 135 },
+    "thumbnail": "https://example.com/pegasus.jpg",
+    "links": { "stockX": "https://stockx.com/pegasus" }
+  },
+  {
+    "id": "snk-002",
+    "shoeName": "UltraBoost 22",
+    "brand": "Adidas",
+    "colorway": "Core Black",
+    "retailPrice": 140,
+    "lowestResellPrice": null,
+    "thumbnail": "https://example.com/ultraboost.jpg",
+    "links": { "goat": "https://goat.com/ultraboost" }
+  },
+  {
+    "id": "snk-003",
+    "shoeName": "Gel-Kayano 30",
+    "brand": "ASICS",
+    "colorway": "Blue/White",
+    "retailPrice": 160,
+    "lowestResellPrice": { "stockX": 155 },
+    "thumbnail": "https://example.com/kayano.jpg",
+    "links": { "stockX": "https://stockx.com/kayano" }
+  },
+  {
+    "id": "snk-004",
+    "shoeName": "Fresh Foam X",
+    "brand": "New Balance",
+    "colorway": "Grey",
+    "retailPrice": 130,
+    "lowestResellPrice": { "goat": 128 },
+    "thumbnail": "https://example.com/freshfoam.jpg",
+    "links": { "goat": "https://goat.com/freshfoam" }
+  },
+  {
+    "id": "snk-005",
+    "shoeName": "Clifton 9",
+    "brand": "Hoka",
+    "colorway": "Black",
+    "retailPrice": 145,
+    "lowestResellPrice": null,
+    "thumbnail": "https://example.com/clifton.jpg",
+    "links": { "stockX": "https://stockx.com/clifton" }
+  },
+  {
+    "id": "snk-006",
+    "shoeName": "Ghost 15",
+    "brand": "Brooks",
+    "colorway": "Navy",
+    "retailPrice": 140,
+    "lowestResellPrice": { "stockX": 142 },
+    "thumbnail": "https://example.com/ghost.jpg",
+    "links": { "stockX": "https://stockx.com/ghost" }
+  },
+  {
+    "id": "snk-007",
+    "shoeName": "Endorphin Speed 3",
+    "brand": "Saucony",
+    "colorway": "White/Red",
+    "retailPrice": 170,
+    "lowestResellPrice": null,
+    "thumbnail": "https://example.com/endorphin.jpg",
+    "links": { "goat": "https://goat.com/endorphin" }
+  },
+  {
+    "id": "snk-008",
+    "shoeName": "Triumph 21",
+    "brand": "Saucony",
+    "colorway": "Black",
+    "retailPrice": 150,
+    "lowestResellPrice": { "stockX": 148 },
+    "thumbnail": "https://example.com/triumph.jpg",
+    "links": { "stockX": "https://stockx.com/triumph" }
+  },
+  {
+    "id": "snk-009",
+    "shoeName": "Ride 16",
+    "brand": "Saucony",
+    "colorway": "Blue",
+    "retailPrice": 120,
+    "lowestResellPrice": null,
+    "thumbnail": "https://example.com/ride.jpg",
+    "links": { "goat": "https://goat.com/ride" }
+  },
+  {
+    "id": "snk-010",
+    "shoeName": "Wave Rider 27",
+    "brand": "Mizuno",
+    "colorway": "Silver",
+    "retailPrice": 135,
+    "lowestResellPrice": { "stockX": 130 },
+    "thumbnail": "https://example.com/waverider.jpg",
+    "links": { "stockX": "https://stockx.com/waverider" }
+  }
+]
