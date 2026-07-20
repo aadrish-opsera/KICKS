@@ -7,6 +7,7 @@ import {
   QuotaExhaustedError,
   type IGeminiService,
 } from '../src/services/gemini-service'
+import { GracefulDegradation } from '../src/services/graceful-degradation'
 import { InputSanitizer } from '../src/services/input-sanitizer'
 import type { ISneakerDataSource } from '../src/services/sneaker-data-source'
 import { SneakerService } from '../src/services/sneaker-service'
@@ -27,6 +28,7 @@ export type RecommendHandlerDeps = {
   sneaksFallbackService: ISneakerDataSource
   geminiService: IGeminiService
   degradedRanker: DegradedRanker
+  gracefulDegradation: GracefulDegradation
   logger: RecommendLogger
   now: () => number
   createRequestId: () => string
@@ -47,6 +49,7 @@ export function createRecommendHandler(deps: Partial<RecommendHandlerDeps> = {})
     sneaksFallbackService: new SneaksFallbackService(),
     geminiService: new GeminiService(),
     degradedRanker: new DegradedRanker(),
+    gracefulDegradation: new GracefulDegradation(),
     logger: defaultLogger,
     now: () => Date.now(),
     createRequestId: () => randomUUID(),
@@ -144,8 +147,15 @@ export function createRecommendHandler(deps: Partial<RecommendHandlerDeps> = {})
       let ranked = candidates
       let aiRankingAvailable = false
       let geminiQuotaRemaining = -1
+      let degradationReason: RecommendationResponse['degradationReason']
+      let userMessage: string | undefined
 
-      if (remaining >= config.geminiMinRemainingMs) {
+      const skipReason = config.gracefulDegradation.shouldSkipGemini({
+        canMakeRequest: true,
+        elapsedMs: elapsed,
+      })
+
+      if (remaining >= config.geminiMinRemainingMs && skipReason === null) {
         try {
           const geminiResult = await config.geminiService.rankSneakers(
             sanitization.sanitizedText,
@@ -156,23 +166,37 @@ export function createRecommendHandler(deps: Partial<RecommendHandlerDeps> = {})
           aiRankingAvailable = geminiResult.aiRankingAvailable
           geminiQuotaRemaining = geminiResult.quotaRemaining
           geminiStatus = geminiResult.aiRankingAvailable ? 'success' : 'degraded'
-        } catch (error) {
-          if (error instanceof QuotaExhaustedError) {
-            geminiStatus = 'quota_exhausted'
-          } else {
-            geminiStatus = 'error'
+          if (!geminiResult.aiRankingAvailable) {
+            degradationReason = 'gemini_error'
+            userMessage =
+              'AI-powered explanations are temporarily unavailable. Results are sorted by price match to your budget.'
           }
-          ranked = config.degradedRanker
-            .rankByPriceRelevance(budgetValidation.validatedBudget, candidates)
-            .map(({ rank: _rank, ...sneaker }) => sneaker)
+        } catch (error) {
+          const reason =
+            error instanceof QuotaExhaustedError ? 'quota_exhausted' : 'gemini_error'
+          geminiStatus = reason
+          const degraded = config.gracefulDegradation.rank(
+            budgetValidation.validatedBudget,
+            candidates,
+            reason,
+          )
+          ranked = degraded.sneakers
           aiRankingAvailable = false
+          degradationReason = degraded.degradationReason
+          userMessage = degraded.userMessage
         }
       } else {
-        geminiStatus = 'skipped_low_time'
-        ranked = config.degradedRanker
-          .rankByPriceRelevance(budgetValidation.validatedBudget, candidates)
-          .map(({ rank: _rank, ...sneaker }) => sneaker)
+        const reason = skipReason ?? 'timeout_guard'
+        geminiStatus = reason
+        const degraded = config.gracefulDegradation.rank(
+          budgetValidation.validatedBudget,
+          candidates,
+          reason,
+        )
+        ranked = degraded.sneakers
         aiRankingAvailable = false
+        degradationReason = degraded.degradationReason
+        userMessage = degraded.userMessage
       }
 
       const responseBody: RecommendationResponse = {
@@ -181,6 +205,7 @@ export function createRecommendHandler(deps: Partial<RecommendHandlerDeps> = {})
         geminiQuotaRemaining,
         queryTime: config.now() - startedAt,
         sneakerApiSource,
+        ...(degradationReason ? { degradationReason, userMessage } : {}),
       }
 
       config.logger.info({
