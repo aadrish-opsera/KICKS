@@ -48,12 +48,12 @@ describe('ResultsPage', () => {
     const checkboxes = screen.getAllByRole('checkbox')
     await user.click(checkboxes[0]!)
     await user.click(checkboxes[1]!)
-    expect(screen.getByRole('button', { name: /compare 2 sneakers/i })).toBeEnabled()
+    expect(screen.getByRole('button', { name: /compare selected \(2\)/i })).toBeEnabled()
     await user.click(checkboxes[2]!)
-    expect(screen.getByRole('button', { name: /compare 3 sneakers/i })).toBeEnabled()
+    expect(screen.getByRole('button', { name: /compare selected \(3\)/i })).toBeEnabled()
     await user.click(checkboxes[3]!)
     expect(screen.getByText(/deselect one sneaker/i)).toBeInTheDocument()
-    await user.click(screen.getByRole('button', { name: /compare 3 sneakers/i }))
+    await user.click(screen.getByRole('button', { name: /compare selected \(3\)/i }))
     expect(screen.getByText('Comparison')).toBeInTheDocument()
   })
 
@@ -66,10 +66,10 @@ describe('ResultsPage', () => {
     expect(screen.getAllByRole('article').length).toBeGreaterThan(0)
   })
 
-  it('opens detail modal from View Details', async () => {
+  it('opens detail modal from See More', async () => {
     const user = userEvent.setup()
     renderWithState({ recommendation: successResponse })
-    await user.click(screen.getAllByRole('button', { name: /view details/i })[0]!)
+    await user.click(screen.getAllByRole('button', { name: /see more/i })[0]!)
     expect(screen.getByRole('dialog')).toBeInTheDocument()
   })
 })
