@@ -1,0 +1,25 @@
+# Dependencies
+node_modules/
+
+# Build
+dist/
+
+# Env
+.env
+.env.local
+.env.*.local
+
+# Coverage / TypeScript
+coverage/
+*.tsbuildinfo
+
+# Logs / editor
+*.log
+.DS_Store
+
+# Forge-managed local artifacts (never commit)
+.forge-commit-ready
+.forge/project-id
+.cursor/hooks.json
+.cursor/hooks/
+.cursor/rules/forge-workflow.mdc
