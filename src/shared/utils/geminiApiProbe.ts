@@ -1,17 +1,16 @@
 export type ApiStatus = 'up' | 'down'
 
-const DEFAULT_GEMINI_MODELS_URL =
-  'https://generativelanguage.googleapis.com/v1/models'
+const DEFAULT_GROQ_MODELS_URL = 'https://api.groq.com/openai/v1/models'
 const PROBE_TIMEOUT_MS = 3000
 
 export type GeminiApiProbe = (apiKey?: string) => Promise<ApiStatus>
 
 /**
- * Non-generative Gemini connectivity probe (list models).
- * Avoids consuming daily generation quota.
+ * Non-generative Groq connectivity probe (list models).
+ * Kept as probeGeminiApi for health-handler compatibility.
  */
 export const probeGeminiApi: GeminiApiProbe = async (
-  apiKey = process.env.GEMINI_API_KEY,
+  apiKey = process.env.GROQ_API_KEY ?? process.env.GEMINI_API_KEY,
 ): Promise<ApiStatus> => {
   if (!apiKey) {
     return 'down'
@@ -21,10 +20,12 @@ export const probeGeminiApi: GeminiApiProbe = async (
   const timeoutId = setTimeout(() => controller.abort(), PROBE_TIMEOUT_MS)
 
   try {
-    const url = `${DEFAULT_GEMINI_MODELS_URL}?key=${encodeURIComponent(apiKey)}`
-    const response = await fetch(url, {
+    const response = await fetch(DEFAULT_GROQ_MODELS_URL, {
       method: 'GET',
-      headers: { Accept: 'application/json' },
+      headers: {
+        Accept: 'application/json',
+        Authorization: `Bearer ${apiKey}`,
+      },
       signal: controller.signal,
     })
 

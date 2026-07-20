@@ -83,7 +83,7 @@ export class GeminiService implements IGeminiService {
 
   constructor(config: Partial<GeminiServiceConfig> = {}) {
     this.config = {
-      apiKey: process.env.GEMINI_API_KEY,
+      apiKey: process.env.GROQ_API_KEY ?? process.env.GEMINI_API_KEY,
       timeoutMs: 5000,
       promptConstructor: new PromptConstructor(),
       quotaTracker: new QuotaTracker(),
@@ -109,7 +109,7 @@ export class GeminiService implements IGeminiService {
     }
 
     if (!this.config.apiKey) {
-      throw new GeminiApiError('GEMINI_API_KEY is missing')
+      throw new GeminiApiError('GROQ_API_KEY is missing')
     }
 
     const prompt = this.config.promptConstructor.buildPrompt(
@@ -273,37 +273,40 @@ async function defaultGeminiGenerate(input: {
   apiKey: string
   signal: AbortSignal
 }): Promise<{ text: string; tokensUsed: number }> {
-  const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${encodeURIComponent(input.apiKey)}`
-  const response = await fetch(url, {
+  const model = process.env.GROQ_MODEL?.trim() || 'llama-3.3-70b-versatile'
+  const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
     method: 'POST',
     signal: input.signal,
-    headers: { 'Content-Type': 'application/json' },
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${input.apiKey}`,
+    },
     body: JSON.stringify({
-      system_instruction: { parts: [{ text: input.systemInstruction }] },
-      contents: [{ role: 'user', parts: [{ text: input.userPrompt }] }],
-      generationConfig: {
-        temperature: 0.3,
-        maxOutputTokens: 1024,
-        responseMimeType: 'application/json',
-      },
+      model,
+      temperature: 0.3,
+      max_tokens: 1024,
+      messages: [
+        { role: 'system', content: input.systemInstruction },
+        { role: 'user', content: input.userPrompt },
+      ],
     }),
   })
 
   if (!response.ok) {
-    throw new GeminiApiError(`Gemini API responded with ${response.status}`)
+    throw new GeminiApiError(`Groq API responded with ${response.status}`)
   }
 
   const payload = (await response.json()) as {
-    candidates?: Array<{ content?: { parts?: Array<{ text?: string }> } }>
-    usageMetadata?: { totalTokenCount?: number }
+    choices?: Array<{ message?: { content?: string | null } }>
+    usage?: { total_tokens?: number }
   }
-  const text = payload.candidates?.[0]?.content?.parts?.[0]?.text
+  const text = payload.choices?.[0]?.message?.content
   if (!text) {
-    throw new GeminiApiError('Gemini API returned an empty response')
+    throw new GeminiApiError('Groq API returned an empty response')
   }
 
   return {
     text,
-    tokensUsed: payload.usageMetadata?.totalTokenCount ?? 0,
+    tokensUsed: payload.usage?.total_tokens ?? 0,
   }
 }

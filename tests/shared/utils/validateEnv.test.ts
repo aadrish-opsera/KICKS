@@ -4,7 +4,7 @@ import { validateClientEnv } from '../../../src/shared/utils/validateClientEnv'
 
 /** Fixture: all required server vars present. */
 export const completeServerEnvFixture: NodeJS.ProcessEnv = {
-  GEMINI_API_KEY: 'test-gemini-key',
+  GROQ_API_KEY: 'test-groq-key',
   SENTRY_DSN: 'https://examplePublicKey@o0.ingest.sentry.io/0',
   SNEAKER_DB_API_KEY: 'test-sneaker-key',
 }
@@ -23,41 +23,48 @@ describe('validateServerEnv', () => {
     const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => undefined)
     const result = validateServerEnv(completeServerEnvFixture)
 
-    expect(result.GEMINI_API_KEY).toBe('test-gemini-key')
+    expect(result.GROQ_API_KEY).toBe('test-groq-key')
     expect(result.SENTRY_DSN).toContain('ingest.sentry.io')
     expect(result.SNEAKER_DB_API_KEY).toBe('test-sneaker-key')
     expect(warnSpy).not.toHaveBeenCalled()
   })
 
   it('throws when a required variable is missing', () => {
-    expect(() => validateServerEnv(missingGeminiEnvFixture)).toThrow(
-      /GEMINI_API_KEY/,
-    )
+    expect(() => validateServerEnv(missingGeminiEnvFixture)).toThrow(/GROQ_API_KEY/)
   })
 
   it('throws when a required variable is an empty string', () => {
     expect(() =>
       validateServerEnv({
-        GEMINI_API_KEY: '   ',
+        GROQ_API_KEY: '   ',
         SENTRY_DSN: 'https://examplePublicKey@o0.ingest.sentry.io/0',
       }),
-    ).toThrow(/GEMINI_API_KEY/)
+    ).toThrow(/GROQ_API_KEY/)
   })
 
   it('throws when a required variable is still a placeholder', () => {
     expect(() =>
       validateServerEnv({
-        GEMINI_API_KEY: '<your-gemini-api-key>',
+        GROQ_API_KEY: '<your-groq-api-key>',
         SENTRY_DSN: 'https://examplePublicKey@o0.ingest.sentry.io/0',
       }),
-    ).toThrow(/GEMINI_API_KEY/)
+    ).toThrow(/GROQ_API_KEY/)
+  })
+
+  it('accepts legacy GEMINI_API_KEY as AI key fallback', () => {
+    const result = validateServerEnv({
+      GEMINI_API_KEY: 'legacy-gemini-key',
+      SENTRY_DSN: 'https://examplePublicKey@o0.ingest.sentry.io/0',
+      SNEAKER_DB_API_KEY: 'test-sneaker-key',
+    })
+    expect(result.GROQ_API_KEY).toBe('legacy-gemini-key')
   })
 
   it('warns when optional SNEAKER_DB_API_KEY is missing', () => {
     const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => undefined)
 
     const result = validateServerEnv({
-      GEMINI_API_KEY: 'test-gemini-key',
+      GROQ_API_KEY: 'test-groq-key',
       SENTRY_DSN: 'https://examplePublicKey@o0.ingest.sentry.io/0',
     })
 

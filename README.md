@@ -1,6 +1,6 @@
 # KICKS
 
-AI-powered sneaker recommendation web app.
+AI-powered sneaker recommendation web app (ranking via Groq Chat Completions).
 
 ## Prerequisites
 
@@ -38,7 +38,8 @@ cp .env.example .env.local
 
 2. Never commit `.env`, `.env.local`, or other secret files (they are gitignored).
 3. For Vercel production/preview, set the same variables in the project **Settings → Environment Variables** dashboard.
-4. `VITE_` prefixed variables are exposed to the browser via Vite. Server-only keys (`GEMINI_API_KEY`, `SNEAKER_DB_API_KEY`, `SENTRY_DSN`) must not use the `VITE_` prefix.
+4. `VITE_` prefixed variables are exposed to the browser via Vite. Server-only keys (`GROQ_API_KEY`, `SNEAKER_DB_API_KEY`, `SENTRY_DSN`) must not use the `VITE_` prefix.
+5. Set `GROQ_API_KEY` for AI ranking (optional legacy alias: `GEMINI_API_KEY`). Override the model with `GROQ_MODEL` if needed (default `llama-3.3-70b-versatile`).
 
 Runtime helpers:
 
