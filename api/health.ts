@@ -1,4 +1,5 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node'
+import { captureServerError } from '../src/shared/utils/captureServerError'
 import {
   probeGeminiApi,
   type GeminiApiProbe,
@@ -8,6 +9,9 @@ import {
   probeSneakerApi,
   type SneakerApiProbe,
 } from '../src/shared/utils/sneakerApiProbe'
+import { initSentryServer } from '../src/shared/utils/sentryServerInit'
+
+initSentryServer()
 
 export type HealthStatus = 'healthy' | 'degraded'
 export type ApiReachability = 'up' | 'down'
@@ -83,7 +87,12 @@ export function createHealthHandler(deps: Partial<HealthHandlerDeps> = {}) {
     try {
       const body = await runHealthCheck(deps)
       res.status(200).json(body)
-    } catch {
+    } catch (error) {
+      captureServerError(error, {
+        endpoint: '/api/health',
+        requestId: 'health-check',
+        errorType: 'INTERNAL_ERROR',
+      })
       const errorBody: HealthErrorResponse = {
         error: true,
         code: 'INTERNAL_ERROR',
