@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="320" height="180" viewBox="0 0 320 180" role="img" aria-label="Sneaker placeholder">
+  <rect width="320" height="180" fill="#E2E8F0"/>
+  <path d="M60 110c40-35 90-45 140-30 25 8 45 20 60 28v12H70l-10-10z" fill="#94A3B8"/>
+  <path d="M70 120h170v8H70z" fill="#64748B"/>
+  <circle cx="95" cy="95" r="8" fill="#CBD5E1"/>
+</svg>
