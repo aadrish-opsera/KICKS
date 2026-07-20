@@ -1,0 +1,103 @@
+/* Global reset + design tokens for KICKS (mobile-first, no CSS frameworks). */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  min-width: 320px;
+  min-height: 100vh;
+  font-family:
+    'Segoe UI',
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    'Helvetica Neue',
+    Arial,
+    sans-serif;
+  font-size: var(--font-size-md);
+  line-height: 1.5;
+  color: var(--color-text);
+  background-color: var(--color-background);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+img,
+picture,
+video,
+canvas,
+svg {
+  display: block;
+  max-width: 100%;
+}
+
+input,
+button,
+textarea,
+select {
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+a {
+  color: inherit;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p {
+  margin: 0;
+}
+
+:root {
+  /* Breakpoints (documented values; media queries use literal px — custom props are not valid in @media) */
+  --breakpoint-mobile: 320px;
+  --breakpoint-tablet: 768px;
+  --breakpoint-desktop: 1024px;
+
+  /*
+   * Colors — WCAG AA against --color-background (#FFFFFF):
+   * primary #0B3D91 ~7.4:1, secondary #334155 ~8.6:1, text #0F172A ~16:1,
+   * error #B42318 ~5.9:1, success #027A48 ~5.4:1
+   */
+  --color-primary: #0b3d91;
+  --color-secondary: #334155;
+  --color-error: #b42318;
+  --color-success: #027a48;
+  --color-background: #ffffff;
+  --color-text: #0f172a;
+
+  /* Spacing scale */
+  --spacing-xs: 4px;
+  --spacing-sm: 8px;
+  --spacing-md: 16px;
+  --spacing-lg: 24px;
+  --spacing-xl: 32px;
+
+  /* Typography scale */
+  --font-size-sm: 0.875rem;
+  --font-size-md: 1rem;
+  --font-size-lg: 1.25rem;
+  --font-size-xl: 1.5rem;
+
+  /* Interactive / shape */
+  --touch-target-min: 44px;
+  --border-radius-sm: 4px;
+  --border-radius-md: 8px;
+}
