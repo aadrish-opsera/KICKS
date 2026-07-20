@@ -14,6 +14,7 @@ export default tseslint.config(
       'api/**/*.js',
       'lighthouserc.cjs',
       'scripts/**',
+      'middleware.ts',
     ],
   },
   js.configs.recommended,

@@ -1,5 +1,5 @@
 # Forge Shipping Engine pipeline — KICKS
-# Stages: source → pre-check → build → lint → type-check → test → deploy
+# Stages: source → pre-check → build → lint → type-check → test → security → deploy
 
 name: kicks-ci-cd
 version: 1
@@ -43,6 +43,20 @@ stages:
     steps:
       - run: npm run test:coverage
 
+  - name: security
+    description: Parallel SCA + secret detection gates
+    parallel: true
+    steps:
+      - name: npm-audit
+        run: npm run audit:check
+      - name: snyk-scan
+        run: npm run audit:snyk
+        continueOnAuthOrQuotaFailure: true
+      - name: gitleaks-scan
+        run: gitleaks detect --source . --config .gitleaks.toml --redact --verbose
+      - name: sensitive-file-check
+        run: npm run check:sensitive-files
+
   - name: deploy
     description: Vercel deploy by branch context
     steps:
@@ -57,3 +71,4 @@ secrets:
   - VERCEL_TOKEN
   - VERCEL_ORG_ID
   - VERCEL_PROJECT_ID
+  - SNYK_TOKEN

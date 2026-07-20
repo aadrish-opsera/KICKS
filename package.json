@@ -15,6 +15,10 @@
     "test": "vitest run",
     "test:coverage": "vitest run --coverage",
     "check:node-modules": "node scripts/check-node-modules.mjs",
+    "check:sensitive-files": "node scripts/check-sensitive-files.mjs",
+    "audit:check": "npm audit --omit=dev --audit-level=high",
+    "audit:snyk": "node scripts/audit-snyk.mjs",
+    "prepare": "husky",
     "lighthouse": "lhci autorun --config=./lighthouserc.cjs"
   },
   "dependencies": {
@@ -36,6 +40,7 @@
     "@types/jsdom": "^28.0.3",
     "@types/react": "^18.3.12",
     "@types/react-dom": "^18.3.1",
+    "@vercel/edge": "^1.3.1",
     "@vercel/node": "^3.2.29",
     "@vitejs/plugin-react": "^4.3.4",
     "@vitest/coverage-v8": "^2.1.9",
@@ -44,6 +49,7 @@
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-react-hooks": "^7.1.1",
     "eslint-plugin-react-refresh": "^0.5.3",
+    "husky": "^9.1.7",
     "jest-axe": "^10.0.0",
     "jsdom": "^29.1.1",
     "prettier": "^3.9.5",
