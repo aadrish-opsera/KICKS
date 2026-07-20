@@ -5,7 +5,9 @@ import { createRoot } from 'react-dom/client'
 import App from './App'
 import ErrorBoundary from './components/ErrorBoundary'
 import { initSentryClient } from './shared/utils/sentryClientInit'
+import { validateClientEnv } from './shared/utils/validateClientEnv'
 
+validateClientEnv()
 initSentryClient()
 
 const rootElement = document.getElementById('root')
