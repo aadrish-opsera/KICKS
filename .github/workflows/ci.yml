@@ -87,32 +87,35 @@ jobs:
     needs: [quality, security]
     runs-on: ubuntu-latest
     timeout-minutes: 10
-    if: ${{ secrets.VERCEL_TOKEN != '' }}
+    # Job-level `if:` cannot reference `secrets`; map secrets to env then gate steps.
+    env:
+      VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+      VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+      VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
     steps:
+      - name: Skip when Vercel not configured
+        if: env.VERCEL_TOKEN == ''
+        run: echo "VERCEL_TOKEN not set; skipping deploy."
+
       - name: Checkout
+        if: env.VERCEL_TOKEN != ''
         uses: actions/checkout@v4
 
       - name: Setup Node.js
+        if: env.VERCEL_TOKEN != ''
         uses: actions/setup-node@v4
         with:
           node-version: '20'
           cache: npm
 
       - name: Install dependencies
+        if: env.VERCEL_TOKEN != ''
         run: npm ci
 
       - name: Deploy production
-        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-        env:
-          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
-          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
-          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+        if: env.VERCEL_TOKEN != '' && github.event_name == 'push' && github.ref == 'refs/heads/main'
         run: npx vercel --prod --token "$VERCEL_TOKEN" --yes
 
       - name: Deploy preview
-        if: github.event_name == 'pull_request' || (github.event_name == 'push' && github.ref != 'refs/heads/main')
-        env:
-          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
-          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
-          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+        if: env.VERCEL_TOKEN != '' && (github.event_name == 'pull_request' || (github.event_name == 'push' && github.ref != 'refs/heads/main'))
         run: npx vercel --token "$VERCEL_TOKEN" --yes
