@@ -3,31 +3,31 @@ title = "KICKS secret detection rules"
 [[rules]]
 id = "kicks-groq-api-key"
 description = "Groq API key assignment with a non-placeholder value"
-regex = '''(?i)GROQ_API_KEY\s*=\s*(?!<your-)(?!["']?<)([^\s"']{12,})'''
+regex = '''(?i)GROQ_API_KEY\s*=\s*([A-Za-z0-9_\-]{12,})'''
 keywords = ["GROQ_API_KEY"]
 
 [[rules]]
 id = "kicks-gemini-api-key"
 description = "Gemini API key assignment with a non-placeholder value"
-regex = '''(?i)GEMINI_API_KEY\s*=\s*(?!<your-)(?!["']?<)([^\s"']{12,})'''
+regex = '''(?i)GEMINI_API_KEY\s*=\s*([A-Za-z0-9_\-]{12,})'''
 keywords = ["GEMINI_API_KEY"]
 
 [[rules]]
 id = "kicks-sneaker-db-api-key"
 description = "Sneaker DB API key assignment with a non-placeholder value"
-regex = '''(?i)SNEAKER_DB_API_KEY\s*=\s*(?!<your-)(?!["']?<)([^\s"']{12,})'''
+regex = '''(?i)SNEAKER_DB_API_KEY\s*=\s*([A-Za-z0-9_\-]{12,})'''
 keywords = ["SNEAKER_DB_API_KEY"]
 
 [[rules]]
 id = "kicks-rapidapi-key"
 description = "RapidAPI key assignment with a non-placeholder value"
-regex = '''(?i)RAPIDAPI_KEY\s*=\s*(?!<your-)(?!["']?<)([^\s"']{12,})'''
+regex = '''(?i)RAPIDAPI_KEY\s*=\s*([A-Za-z0-9_\-]{12,})'''
 keywords = ["RAPIDAPI_KEY"]
 
 [[rules]]
 id = "kicks-vercel-token"
 description = "Vercel token assignment with a non-placeholder value"
-regex = '''(?i)VERCEL_TOKEN\s*=\s*(?!<your-)(?!["']?<)([^\s"']{12,})'''
+regex = '''(?i)VERCEL_TOKEN\s*=\s*([A-Za-z0-9_\-]{12,})'''
 keywords = ["VERCEL_TOKEN"]
 
 [[rules]]
