@@ -1,5 +1,7 @@
 import type { ReactElement } from 'react'
+import { X } from 'lucide-react'
 import { RESULTS } from '../../constants/uiText'
+import ActionButton from '../shared/ActionButton/ActionButton'
 import styles from './EmptyFilterState.module.css'
 
 export type EmptyFilterStateProps = {
@@ -10,9 +12,12 @@ function EmptyFilterState({ onClear }: EmptyFilterStateProps): ReactElement {
   return (
     <div className={styles.root} role="status">
       <p>{RESULTS.emptyFilters}</p>
-      <button type="button" className={styles.clear} onClick={onClear}>
-        {RESULTS.clearFilters}
-      </button>
+      <ActionButton
+        className={styles.clear}
+        icon={X}
+        label={RESULTS.clearFilters}
+        onClick={onClear}
+      />
     </div>
   )
 }

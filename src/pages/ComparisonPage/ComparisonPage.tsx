@@ -46,10 +46,12 @@ function ComparisonPage(): ReactElement {
         />
         <h1 className={styles.title}>{COMPARISON.heading}</h1>
       </header>
-      <ComparisonTable
-        sneakers={selectedSneakers}
-        aiRankingAvailable={aiRankingAvailable}
-      />
+      <section className={styles.compareRegion} aria-label={COMPARISON.regionLabel}>
+        <ComparisonTable
+          sneakers={selectedSneakers}
+          aiRankingAvailable={aiRankingAvailable}
+        />
+      </section>
     </PageLayout>
   )
 }

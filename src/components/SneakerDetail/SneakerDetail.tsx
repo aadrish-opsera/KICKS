@@ -1,11 +1,12 @@
-import { useEffect, useId, useRef, type ReactElement } from 'react'
+import { useEffect, useId, useRef, useState, type ReactElement } from 'react'
 import type { Sneaker } from '../../shared/types/sneaker'
 import placeholderImage from '../../assets/sneaker-placeholder.svg'
+import { COMPARISON } from '../../constants/uiText'
 import { useFocusTrap } from '../../hooks/useFocusTrap'
 import { formatCurrency } from '../../utils/formatCurrency'
 import { sanitizeInput } from '../../utils/sanitize'
+import Image from '../shared/Image/Image'
 import styles from './SneakerDetail.module.css'
-import { useState } from 'react'
 
 export type SneakerDetailProps = {
   sneaker: Sneaker
@@ -43,7 +44,7 @@ function SneakerDetail({ sneaker, isOpen, onClose }: SneakerDetailProps): ReactE
 
   const explanation = sneaker.aiExplanation
     ? sanitizeInput(sneaker.aiExplanation)
-    : 'AI insights not available for this sneaker'
+    : COMPARISON.aiUnavailableDetail
   const hasResale =
     (sneaker.resalePrice != null && sneaker.resalePrice > 0) ||
     sneaker.resaleLinks.length > 0
@@ -67,7 +68,7 @@ function SneakerDetail({ sneaker, isOpen, onClose }: SneakerDetailProps): ReactE
         >
           ×
         </button>
-        <img
+        <Image
           className={styles.image}
           src={imageSrc}
           alt={`${sneaker.name} by ${sneaker.brand}`}

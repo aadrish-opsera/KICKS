@@ -12,6 +12,10 @@
   color: var(--color-text);
 }
 
+.slider {
+  max-width: 28rem;
+}
+
 .group {
   display: flex;
   flex-wrap: wrap;

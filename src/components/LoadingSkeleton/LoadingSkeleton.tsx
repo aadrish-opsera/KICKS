@@ -1,4 +1,5 @@
 import type { ReactElement } from 'react'
+import { LOADING } from '../../constants/uiText'
 import styles from './LoadingSkeleton.module.css'
 
 export type LoadingSkeletonProps = {
@@ -11,7 +12,7 @@ function LoadingSkeleton({ count = 5 }: LoadingSkeletonProps): ReactElement {
   return (
     <div className={styles.root} data-testid="loading-skeleton">
       <div className={styles.status} role="status" aria-live="polite">
-        Loading sneaker recommendations...
+        {LOADING.message}
       </div>
       <div className={styles.grid}>
         {cards.map((index) => (

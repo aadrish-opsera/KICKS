@@ -1,7 +1,10 @@
 import { useMemo, type ReactElement } from 'react'
 import type { Sneaker } from '../../shared/types/sneaker'
+import { RESULTS } from '../../constants/uiText'
 import { EMPTY_FILTER_STATE, type FilterState } from '../../types/filters'
 import { formatCurrency } from '../../utils/formatCurrency'
+import ActionButton from '../shared/ActionButton/ActionButton'
+import { X } from 'lucide-react'
 import styles from './FilterControls.module.css'
 
 export type FilterControlsProps = {
@@ -49,10 +52,10 @@ function FilterControls({
   }, [priceBounds])
 
   return (
-    <section className={styles.root} aria-label="Filter sneakers">
+    <section className={styles.root} aria-label={RESULTS.filterRegion}>
       <div className={styles.group}>
         <p className={styles.heading}>
-          <span aria-hidden="true">🏷️</span> Brand
+          <span aria-hidden="true">🏷️</span> {RESULTS.brandFilter}
         </p>
         <div className={styles.pills}>
           <button
@@ -62,7 +65,7 @@ function FilterControls({
             }
             onClick={() => onChange({ ...filters, brand: null })}
           >
-            All brands
+            {RESULTS.allBrands}
           </button>
           {brands.map((brand) => (
             <button
@@ -83,10 +86,10 @@ function FilterControls({
 
       <div className={styles.group}>
         <p className={styles.heading}>
-          <span aria-hidden="true">$</span> Price
+          <span aria-hidden="true">$</span> {RESULTS.priceFilter}
         </p>
         {buckets.length === 0 ? (
-          <p className={styles.hint}>All sneakers share the same price.</p>
+          <p className={styles.hint}>{RESULTS.samePriceHint}</p>
         ) : (
           <div className={styles.pills}>
             <button
@@ -100,7 +103,7 @@ function FilterControls({
                 onChange({ ...filters, priceMin: null, priceMax: null })
               }
             >
-              Any price
+              {RESULTS.anyPrice}
             </button>
             {buckets.map((bucket) => {
               const active =
@@ -126,13 +129,13 @@ function FilterControls({
         )}
       </div>
 
-      <button
-        type="button"
+      <ActionButton
         className={styles.clear}
+        variant="secondary"
+        icon={X}
+        label={RESULTS.clearFilters}
         onClick={() => onChange({ ...EMPTY_FILTER_STATE })}
-      >
-        Clear Filters
-      </button>
+      />
     </section>
   )
 }
