@@ -63,7 +63,7 @@ export async function postRecommendation(
     )
   }
 
-  let payload: unknown = null
+  let payload: unknown
   try {
     payload = await response.json()
   } catch {
