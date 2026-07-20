@@ -13,6 +13,8 @@ import { useComparisonSelection } from '../../hooks/useComparisonSelection'
 import { useFilteredSneakers } from '../../hooks/useFilteredSneakers'
 import type { RecommendationResponse } from '../../shared/types/recommendation'
 import type { Sneaker } from '../../shared/types/sneaker'
+import PageLayout from '../../layouts/PageLayout'
+import { RESULTS } from '../../constants/uiText'
 import { EMPTY_FILTER_STATE, type FilterState } from '../../types/filters'
 import styles from './ResultsPage.module.css'
 
@@ -41,17 +43,19 @@ function ResultsPage(): ReactElement {
 
   if (state.loading) {
     return (
-      <main className={styles.page}>
-        <LoadingSkeleton />
-      </main>
+      <PageLayout className={styles.page}>
+        <div aria-busy="true">
+          <LoadingSkeleton />
+        </div>
+      </PageLayout>
     )
   }
 
   if (state.errorCode) {
     return (
-      <main className={styles.page}>
+      <PageLayout className={styles.page}>
         <ErrorState errorCode={state.errorCode} onRetry={() => navigate('/')} />
-      </main>
+      </PageLayout>
     )
   }
 
@@ -63,10 +67,10 @@ function ResultsPage(): ReactElement {
   const tooFewForCompare = sneakers.length < 2
 
   return (
-    <main className={styles.page}>
+    <PageLayout className={styles.page}>
       <header className={styles.header}>
-        <h1 className={styles.title}>Your top matches</h1>
-        <p className={styles.subtitle}>Pick 2 or 3 sneakers to compare side by side.</p>
+        <h1 className={styles.title}>{RESULTS.heading}</h1>
+        <p className={styles.subtitle}>{RESULTS.subheading}</p>
       </header>
 
       <QuotaBanner aiRankingAvailable={recommendation.aiRankingAvailable} />
@@ -92,7 +96,7 @@ function ResultsPage(): ReactElement {
       )}
 
       {tooFewForCompare ? (
-        <p className={styles.selectionMessage}>Need at least 2 sneakers to compare.</p>
+        <p className={styles.selectionMessage}>{RESULTS.needTwo}</p>
       ) : null}
       {selection.limitMessage ? (
         <p className={styles.selectionMessage}>{selection.limitMessage}</p>
@@ -114,7 +118,7 @@ function ResultsPage(): ReactElement {
           onClose={() => setDetailSneaker(null)}
         />
       ) : null}
-    </main>
+    </PageLayout>
   )
 }
 

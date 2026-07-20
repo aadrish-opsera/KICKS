@@ -1,10 +1,14 @@
+import { Search } from 'lucide-react'
 import { useEffect, useState, type FormEvent, type ReactElement } from 'react'
 import { useNavigate } from 'react-router-dom'
 import BudgetSelector from '../../components/BudgetSelector/BudgetSelector'
 import ErrorState from '../../components/ErrorState/ErrorState'
 import LoadingSkeleton from '../../components/LoadingSkeleton/LoadingSkeleton'
 import PreferenceInput from '../../components/PreferenceInput/PreferenceInput'
+import ActionButton from '../../components/shared/ActionButton/ActionButton'
+import { HOME } from '../../constants/uiText'
 import { useRecommendation } from '../../hooks/useRecommendation'
+import PageLayout from '../../layouts/PageLayout'
 import { DEFAULT_BUDGET, type BudgetRange } from '../../types/budget'
 import styles from './HomePage.module.css'
 
@@ -32,16 +36,14 @@ function HomePage(): ReactElement {
   }
 
   return (
-    <main className={styles.page}>
+    <PageLayout className={styles.page}>
       <header className={styles.header}>
-        <p className={styles.brand}>KICKS</p>
-        <h1 className={styles.title}>Find sneakers you will love</h1>
-        <p className={styles.subtitle}>
-          Tell us what you like and your budget. We will show five great matches.
-        </p>
+        <p className={styles.brand}>{HOME.brand}</p>
+        <h1 className={styles.title}>{HOME.heading}</h1>
+        <p className={styles.subtitle}>{HOME.subheading}</p>
       </header>
 
-      <form className={styles.form} onSubmit={handleSubmit}>
+      <form className={styles.form} onSubmit={handleSubmit} aria-label={HOME.formLabel}>
         <PreferenceInput
           value={preferences}
           onChange={setPreferences}
@@ -49,15 +51,22 @@ function HomePage(): ReactElement {
           disabled={isLoading}
         />
         <BudgetSelector value={budget} onChange={setBudget} disabled={isLoading} />
-        <button type="submit" className={styles.submit} disabled={!canSubmit}>
-          <span aria-hidden="true">🔎</span>
-          {isLoading ? 'Finding sneakers...' : 'Find My Sneakers'}
-        </button>
+        <ActionButton
+          type="submit"
+          icon={Search}
+          label={isLoading ? HOME.submitLoading : HOME.submitButton}
+          disabled={!canSubmit}
+          className={styles.submit}
+        />
       </form>
 
-      {isLoading ? <LoadingSkeleton /> : null}
+      {isLoading ? (
+        <div aria-busy="true">
+          <LoadingSkeleton />
+        </div>
+      ) : null}
       {error ? <ErrorState errorCode={error.code} onRetry={() => void retry()} /> : null}
-    </main>
+    </PageLayout>
   )
 }
 
