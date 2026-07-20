@@ -6,6 +6,12 @@ export type CircuitBreakerConfig = {
   windowMs: number
   failureRateThreshold: number
   now: () => number
+  onTransition?: (event: {
+    previous: CircuitState
+    next: CircuitState
+    failureCount: number
+    reason: string
+  }) => void
 }
 
 export class CircuitBreakerOpenError extends Error {
@@ -17,6 +23,15 @@ export class CircuitBreakerOpenError extends Error {
   }
 }
 
+export class SneakerApiUnavailableError extends Error {
+  readonly code = 'SNEAKER_API_UNAVAILABLE' as const
+
+  constructor(message = 'Primary and fallback sneaker APIs are unavailable') {
+    super(message)
+    this.name = 'SneakerApiUnavailableError'
+  }
+}
+
 type AttemptRecord = {
   at: number
   success: boolean
@@ -24,6 +39,7 @@ type AttemptRecord = {
 
 /**
  * Circuit breaker with consecutive-failure and rolling failure-rate trips.
+ * Default: trip after 3 consecutive failures; 30s open cooldown.
  */
 export class CircuitBreaker {
   private state: CircuitState = 'CLOSED'
@@ -34,7 +50,7 @@ export class CircuitBreaker {
 
   constructor(config: Partial<CircuitBreakerConfig> = {}) {
     this.config = {
-      failureThreshold: 2,
+      failureThreshold: 3,
       openDurationMs: 30_000,
       windowMs: 30_000,
       failureRateThreshold: 0.5,
@@ -56,9 +72,18 @@ export class CircuitBreaker {
   }
 
   recordSuccess(): void {
+    const previous = this.state
     this.consecutiveFailures = 0
     this.recordAttempt(true)
     this.state = 'CLOSED'
+    if (previous !== 'CLOSED') {
+      this.config.onTransition?.({
+        previous,
+        next: 'CLOSED',
+        failureCount: 0,
+        reason: 'probe_or_call_succeeded',
+      })
+    }
   }
 
   recordFailure(): void {
@@ -66,7 +91,7 @@ export class CircuitBreaker {
     this.recordAttempt(false)
 
     if (this.consecutiveFailures >= this.config.failureThreshold) {
-      this.trip()
+      this.trip('consecutive_failures')
       return
     }
 
@@ -74,13 +99,20 @@ export class CircuitBreaker {
       this.attempts.length >= 4 &&
       this.failureRateInWindow() > this.config.failureRateThreshold
     ) {
-      this.trip()
+      this.trip('failure_rate_threshold')
     }
   }
 
-  private trip(): void {
+  private trip(reason: string): void {
+    const previous = this.state
     this.state = 'OPEN'
     this.openedAt = this.config.now()
+    this.config.onTransition?.({
+      previous,
+      next: 'OPEN',
+      failureCount: this.consecutiveFailures,
+      reason,
+    })
   }
 
   private maybeTransitionFromOpen(): void {
@@ -89,7 +121,14 @@ export class CircuitBreaker {
     }
 
     if (this.config.now() - this.openedAt >= this.config.openDurationMs) {
+      const previous = this.state
       this.state = 'HALF_OPEN'
+      this.config.onTransition?.({
+        previous,
+        next: 'HALF_OPEN',
+        failureCount: this.consecutiveFailures,
+        reason: 'cooldown_elapsed',
+      })
     }
   }
 
