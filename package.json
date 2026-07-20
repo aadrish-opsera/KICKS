@@ -21,12 +21,17 @@
     "test:e2e": "playwright test --config=playwright.config.mjs",
     "test:e2e:chromium": "playwright test --config=playwright.config.mjs --project=chromium",
     "test:e2e:smoke": "node scripts/run-e2e-library-smoke.mjs",
+    "test:perf:api": "vitest run tests/performance/api-latency.test.ts",
+    "test:perf:client": "node scripts/run-perf-client.mjs",
+    "test:perf:lighthouse": "lhci autorun --config=./lighthouserc.cjs",
+    "test:perf:bundle": "node scripts/check-bundle-size.mjs",
+    "test:perf": "npm run test:perf:api && npm run test:perf:bundle && npm run test:perf:client && npm run test:perf:lighthouse",
     "check:node-modules": "node scripts/check-node-modules.mjs",
     "check:sensitive-files": "node scripts/check-sensitive-files.mjs",
     "audit:check": "npm audit --omit=dev --audit-level=high",
     "audit:snyk": "node scripts/audit-snyk.mjs",
     "prepare": "husky",
-    "lighthouse": "lhci autorun --config=./lighthouserc.cjs"
+    "lighthouse": "npm run test:perf:lighthouse"
   },
   "dependencies": {
     "@sentry/node": "^10.66.0",
@@ -35,7 +40,8 @@
     "lucide-react": "^1.25.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
-    "react-router-dom": "^6.28.0"
+    "react-router-dom": "^6.28.0",
+    "web-vitals": "^5.3.0"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
