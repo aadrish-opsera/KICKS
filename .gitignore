@@ -18,6 +18,9 @@ coverage/
 *.log
 .DS_Store
 
+# Lighthouse CI output
+.lighthouseci/
+
 # Forge-managed local artifacts (never commit)
 .forge-commit-ready
 .forge/project-id
