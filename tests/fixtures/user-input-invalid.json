@@ -1,0 +1,8 @@
+{
+  "cases": [
+    { "preferences": "ab", "budget": { "min": 50, "max": 150 }, "reason": "too-short" },
+    { "preferences": "", "budget": { "min": 50, "max": 150 }, "reason": "empty" },
+    { "preferences": "good shoes", "budget": { "min": 200, "max": 50 }, "reason": "min-gt-max" },
+    { "preferences": "good shoes", "budget": { "min": -1, "max": 50 }, "reason": "negative" }
+  ]
+}

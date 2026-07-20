@@ -1,0 +1,38 @@
+[
+  {
+    "id": "c-1",
+    "name": "Air Zoom Pegasus",
+    "brand": "Nike",
+    "colorway": "Black/White",
+    "retailPrice": 120,
+    "resalePrice": 135,
+    "imageUrl": "https://example.com/1.jpg",
+    "resaleLinks": [{ "platform": "StockX", "url": "https://stockx.com/pegasus" }],
+    "aiExplanation": "Great cushioning for daily runs.",
+    "aiRating": 9
+  },
+  {
+    "id": "c-2",
+    "name": "UltraBoost 22",
+    "brand": "Adidas",
+    "colorway": "Core Black",
+    "retailPrice": 140,
+    "resalePrice": null,
+    "imageUrl": "https://example.com/2.jpg",
+    "resaleLinks": [],
+    "aiExplanation": null,
+    "aiRating": null
+  },
+  {
+    "id": "c-3",
+    "name": "Clifton 9",
+    "brand": "Hoka",
+    "colorway": "White",
+    "retailPrice": 145,
+    "resalePrice": null,
+    "imageUrl": null,
+    "resaleLinks": [{ "platform": "GOAT", "url": "https://goat.com/clifton" }],
+    "aiExplanation": "Soft and springy for easy miles.",
+    "aiRating": 8
+  }
+]

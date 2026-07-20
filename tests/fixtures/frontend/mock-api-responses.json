@@ -1,0 +1,18 @@
+{
+  "success": {
+    "sneakers": [],
+    "aiRankingAvailable": true,
+    "geminiQuotaRemaining": 200,
+    "queryTime": 1200,
+    "sneakerApiSource": "sneaker-db"
+  },
+  "degraded": {
+    "sneakers": [],
+    "aiRankingAvailable": false,
+    "geminiQuotaRemaining": 0,
+    "queryTime": 900,
+    "sneakerApiSource": "sneaks-api",
+    "degradationReason": "quota_exhausted",
+    "userMessage": "AI-powered explanations are temporarily unavailable. Results are sorted by price match to your budget."
+  }
+}

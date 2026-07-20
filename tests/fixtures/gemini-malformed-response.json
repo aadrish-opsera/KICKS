@@ -1,0 +1,20 @@
+{
+  "variants": [
+    {
+      "name": "truncated-json",
+      "text": "{\"rankings\":[{\"id\":\"snk-001\",\"rank\":1"
+    },
+    {
+      "name": "missing-rankings",
+      "text": "{\"results\":[]}"
+    },
+    {
+      "name": "invalid-rank-shape",
+      "text": "{\"rankings\":[{\"shoe\":\"oops\"}]}"
+    },
+    {
+      "name": "empty-text",
+      "text": ""
+    }
+  ]
+}
