@@ -7,8 +7,11 @@ import styles from './SneakerCard.module.css'
 export type SneakerCardProps = {
   sneaker: Sneaker
   rank: number
-  isSelected: boolean
-  onSelect: (sneakerId: string, selected: boolean) => void
+  isSelected?: boolean
+  selectable?: boolean
+  onSelect?: (sneakerId: string, selected: boolean) => void
+  onToggle?: (sneakerId: string) => void
+  onViewDetails?: (sneaker: Sneaker) => void
 }
 
 function formatPrice(price: number | undefined): string {
@@ -25,8 +28,11 @@ function formatPrice(price: number | undefined): string {
 function SneakerCard({
   sneaker,
   rank,
-  isSelected,
+  isSelected = false,
+  selectable = true,
   onSelect,
+  onToggle,
+  onViewDetails,
 }: SneakerCardProps): ReactElement {
   const [imageFailed, setImageFailed] = useState(false)
   const imageSrc = imageFailed || !sneaker.imageUrl ? placeholderImage : sneaker.imageUrl
@@ -39,22 +45,32 @@ function SneakerCard({
     setImageFailed(true)
   }
 
+  const handleToggle = (): void => {
+    if (onToggle) {
+      onToggle(sneaker.id)
+      return
+    }
+    onSelect?.(sneaker.id, !isSelected)
+  }
+
   return (
     <article className={isSelected ? `${styles.card} ${styles.selected}` : styles.card}>
       <div className={styles.header}>
         <span className={styles.rank} aria-label={`Rank ${rank}`}>
           {rank}
         </span>
-        <label className={styles.selectLabel}>
-          <input
-            type="checkbox"
-            className={styles.checkbox}
-            checked={isSelected}
-            onChange={(event) => onSelect(sneaker.id, event.target.checked)}
-            aria-label={`Select ${sneaker.name} for comparison`}
-          />
-          <span>Compare</span>
-        </label>
+        {selectable ? (
+          <label className={styles.selectLabel}>
+            <input
+              type="checkbox"
+              className={styles.checkbox}
+              checked={isSelected}
+              onChange={handleToggle}
+              aria-label={`Select ${sneaker.name} for comparison`}
+            />
+            <span>Compare</span>
+          </label>
+        ) : null}
       </div>
       <div className={styles.imageWrap}>
         <img
@@ -72,6 +88,15 @@ function SneakerCard({
         </p>
         <p className={styles.price}>{formatPrice(sneaker.retailPrice)}</p>
         <p className={styles.explanation}>{explanation}</p>
+        {onViewDetails ? (
+          <button
+            type="button"
+            className={styles.details}
+            onClick={() => onViewDetails(sneaker)}
+          >
+            View Details
+          </button>
+        ) : null}
         {sneaker.resaleLinks.length > 0 ? (
           <ul className={styles.links}>
             {sneaker.resaleLinks.map((link) => (
