@@ -1,5 +1,5 @@
 import { expect, test } from '@playwright/test'
-import { fillHomeAndSubmit, mockRecommendApi } from './helpers/api-mocks'
+import { mockRecommendApi } from './helpers/api-mocks'
 
 const FORBIDDEN_JARGON = [
   'submit query',

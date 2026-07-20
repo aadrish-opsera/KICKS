@@ -2,7 +2,7 @@ import { expect, test } from '@playwright/test'
 import { fillHomeAndSubmit, mockRecommendApi } from './helpers/api-mocks'
 
 test.describe('Mobile responsive (US-006)', () => {
-  test.beforeEach(({ }, testInfo) => {
+  test.beforeEach((_fixtures, testInfo) => {
     test.skip(
       testInfo.project.name !== 'custom-320px',
       'US-006 runs on the custom 320px project only',
