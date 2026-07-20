@@ -34,6 +34,7 @@ export const sneakerWithNoExplanation: Sneaker = {
 export const sneakerWithNoResaleLinks: Sneaker = {
   ...completeSneaker,
   id: 'snk-004',
+  resalePrice: null,
   resaleLinks: [],
 }
 

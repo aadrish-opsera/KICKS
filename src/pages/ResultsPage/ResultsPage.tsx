@@ -1,11 +1,19 @@
 import { useMemo, useState, type ReactElement } from 'react'
 import { Navigate, useLocation, useNavigate } from 'react-router-dom'
+import CompareButton from '../../components/CompareButton/CompareButton'
+import EmptyFilterState from '../../components/EmptyFilterState/EmptyFilterState'
 import ErrorState from '../../components/ErrorState/ErrorState'
+import FilterControls from '../../components/FilterControls/FilterControls'
 import LoadingSkeleton from '../../components/LoadingSkeleton/LoadingSkeleton'
 import QuotaBanner from '../../components/QuotaBanner/QuotaBanner'
 import SneakerCard from '../../components/SneakerCard/SneakerCard'
+import SneakerDetail from '../../components/SneakerDetail/SneakerDetail'
+import { useComparisonContext } from '../../context/ComparisonContext'
+import { useComparisonSelection } from '../../hooks/useComparisonSelection'
+import { useFilteredSneakers } from '../../hooks/useFilteredSneakers'
 import type { RecommendationResponse } from '../../shared/types/recommendation'
 import type { Sneaker } from '../../shared/types/sneaker'
+import { EMPTY_FILTER_STATE, type FilterState } from '../../types/filters'
 import styles from './ResultsPage.module.css'
 
 type ResultsLocationState = {
@@ -17,31 +25,19 @@ type ResultsLocationState = {
 function ResultsPage(): ReactElement {
   const location = useLocation()
   const navigate = useNavigate()
+  const { setComparison } = useComparisonContext()
   const state = (location.state ?? {}) as ResultsLocationState
   const recommendation = state.recommendation
 
-  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set())
-  const [selectionMessage, setSelectionMessage] = useState<string | null>(null)
-  const [brandFilter, setBrandFilter] = useState('all')
-  const [maxPriceFilter, setMaxPriceFilter] = useState<number | null>(null)
+  const selection = useComparisonSelection()
+  const [filters, setFilters] = useState<FilterState>({ ...EMPTY_FILTER_STATE })
+  const [detailSneaker, setDetailSneaker] = useState<Sneaker | null>(null)
 
-  const sneakers = recommendation?.sneakers ?? []
-
-  const brands = useMemo(() => {
-    return Array.from(new Set(sneakers.map((item) => item.brand))).sort()
-  }, [sneakers])
-
-  const filteredSneakers = useMemo(() => {
-    return sneakers.filter((item) => {
-      if (brandFilter !== 'all' && item.brand !== brandFilter) {
-        return false
-      }
-      if (maxPriceFilter !== null && item.retailPrice > maxPriceFilter) {
-        return false
-      }
-      return true
-    })
-  }, [sneakers, brandFilter, maxPriceFilter])
+  const sneakers = useMemo(
+    () => recommendation?.sneakers ?? [],
+    [recommendation?.sneakers],
+  )
+  const filteredSneakers = useFilteredSneakers(sneakers, filters)
 
   if (state.loading) {
     return (
@@ -63,26 +59,8 @@ function ResultsPage(): ReactElement {
     return <Navigate to="/" replace />
   }
 
-  const handleSelect = (sneakerId: string, selected: boolean): void => {
-    setSelectedIds((previous) => {
-      const next = new Set(previous)
-      if (!selected) {
-        next.delete(sneakerId)
-        setSelectionMessage(null)
-        return next
-      }
-      if (next.size >= 3 && !next.has(sneakerId)) {
-        setSelectionMessage('Please deselect one sneaker before adding another')
-        return previous
-      }
-      next.add(sneakerId)
-      setSelectionMessage(null)
-      return next
-    })
-  }
-
-  const selectedSneakers: Sneaker[] = sneakers.filter((item) => selectedIds.has(item.id))
-  const canCompare = selectedSneakers.length >= 2 && selectedSneakers.length <= 3
+  const selectedSneakers = sneakers.filter((item) => selection.isSelected(item.id))
+  const tooFewForCompare = sneakers.length < 2
 
   return (
     <main className={styles.page}>
@@ -93,54 +71,10 @@ function ResultsPage(): ReactElement {
 
       <QuotaBanner aiRankingAvailable={recommendation.aiRankingAvailable} />
 
-      <div className={styles.filters}>
-        <label className={styles.filterLabel}>
-          Brand
-          <select
-            className={styles.select}
-            value={brandFilter}
-            onChange={(event) => setBrandFilter(event.target.value)}
-          >
-            <option value="all">All brands</option>
-            {brands.map((brand) => (
-              <option key={brand} value={brand}>
-                {brand}
-              </option>
-            ))}
-          </select>
-        </label>
-        <label className={styles.filterLabel}>
-          Max price
-          <select
-            className={styles.select}
-            value={maxPriceFilter ?? 'all'}
-            onChange={(event) => {
-              const value = event.target.value
-              setMaxPriceFilter(value === 'all' ? null : Number(value))
-            }}
-          >
-            <option value="all">Any price</option>
-            <option value="100">Up to $100</option>
-            <option value="150">Up to $150</option>
-            <option value="200">Up to $200</option>
-          </select>
-        </label>
-      </div>
+      <FilterControls sneakers={sneakers} filters={filters} onChange={setFilters} />
 
       {filteredSneakers.length === 0 ? (
-        <div className={styles.empty}>
-          <p>No sneakers match your filters. Try adjusting your selection.</p>
-          <button
-            type="button"
-            className={styles.clearFilters}
-            onClick={() => {
-              setBrandFilter('all')
-              setMaxPriceFilter(null)
-            }}
-          >
-            Clear Filters
-          </button>
-        </div>
+        <EmptyFilterState onClear={() => setFilters({ ...EMPTY_FILTER_STATE })} />
       ) : (
         <div className={styles.grid}>
           {filteredSneakers.map((sneaker, index) => (
@@ -148,27 +82,37 @@ function ResultsPage(): ReactElement {
               key={sneaker.id}
               sneaker={sneaker}
               rank={index + 1}
-              isSelected={selectedIds.has(sneaker.id)}
-              onSelect={handleSelect}
+              selectable
+              isSelected={selection.isSelected(sneaker.id)}
+              onToggle={selection.toggleSelection}
+              onViewDetails={setDetailSneaker}
             />
           ))}
         </div>
       )}
 
-      {selectionMessage ? <p className={styles.selectionMessage}>{selectionMessage}</p> : null}
+      {tooFewForCompare ? (
+        <p className={styles.selectionMessage}>Need at least 2 sneakers to compare.</p>
+      ) : null}
+      {selection.limitMessage ? (
+        <p className={styles.selectionMessage}>{selection.limitMessage}</p>
+      ) : null}
 
-      {canCompare ? (
-        <button
-          type="button"
-          className={styles.compare}
-          onClick={() =>
-            navigate('/comparison', {
-              state: { sneakers: selectedSneakers },
-            })
-          }
-        >
-          Compare Selected ({selectedSneakers.length})
-        </button>
+      <CompareButton
+        selectionCount={selection.selectionCount}
+        disabled={tooFewForCompare}
+        onClick={() => {
+          setComparison(selectedSneakers, recommendation.aiRankingAvailable)
+          navigate('/comparison')
+        }}
+      />
+
+      {detailSneaker ? (
+        <SneakerDetail
+          sneaker={detailSneaker}
+          isOpen={true}
+          onClose={() => setDetailSneaker(null)}
+        />
       ) : null}
     </main>
   )

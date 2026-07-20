@@ -2,6 +2,7 @@ import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { MemoryRouter, Route, Routes } from 'react-router-dom'
 import { describe, expect, it } from 'vitest'
+import { ComparisonProvider } from '../../context/ComparisonContext'
 import { degradedResponse, successResponse } from '../../test-fixtures/apiResponseFixtures'
 import { BANNER_MESSAGE } from '../../components/QuotaBanner/QuotaBanner'
 import ResultsPage from './ResultsPage'
@@ -9,11 +10,13 @@ import ResultsPage from './ResultsPage'
 function renderWithState(state: unknown) {
   return render(
     <MemoryRouter initialEntries={[{ pathname: '/results', state }]}>
-      <Routes>
-        <Route path="/" element={<div>Home</div>} />
-        <Route path="/results" element={<ResultsPage />} />
-        <Route path="/comparison" element={<div>Comparison</div>} />
-      </Routes>
+      <ComparisonProvider>
+        <Routes>
+          <Route path="/" element={<div>Home</div>} />
+          <Route path="/results" element={<ResultsPage />} />
+          <Route path="/comparison" element={<div>Comparison</div>} />
+        </Routes>
+      </ComparisonProvider>
     </MemoryRouter>,
   )
 }
@@ -39,29 +42,34 @@ describe('ResultsPage', () => {
     expect(screen.getByText('Home')).toBeInTheDocument()
   })
 
-  it('enforces a max of three comparison selections', async () => {
+  it('enforces a max of three comparison selections and navigates', async () => {
     const user = userEvent.setup()
     renderWithState({ recommendation: successResponse })
     const checkboxes = screen.getAllByRole('checkbox')
     await user.click(checkboxes[0]!)
     await user.click(checkboxes[1]!)
+    expect(screen.getByRole('button', { name: /compare 2 sneakers/i })).toBeEnabled()
     await user.click(checkboxes[2]!)
-    expect(screen.getByRole('button', { name: /compare selected/i })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: /compare 3 sneakers/i })).toBeEnabled()
     await user.click(checkboxes[3]!)
     expect(screen.getByText(/deselect one sneaker/i)).toBeInTheDocument()
+    await user.click(screen.getByRole('button', { name: /compare 3 sneakers/i }))
+    expect(screen.getByText('Comparison')).toBeInTheDocument()
   })
 
   it('filters by brand and shows empty state', async () => {
     const user = userEvent.setup()
     renderWithState({ recommendation: successResponse })
-    await user.selectOptions(screen.getByLabelText(/brand/i), 'Converse')
+    await user.click(screen.getByRole('button', { name: 'Converse' }))
     expect(screen.getAllByRole('article')).toHaveLength(1)
-    await user.selectOptions(screen.getByLabelText(/brand/i), 'Nike')
-    // Nike appears more than once in fixtures
+    await user.click(screen.getByRole('button', { name: 'Nike' }))
     expect(screen.getAllByRole('article').length).toBeGreaterThan(0)
-    await user.selectOptions(screen.getByLabelText(/brand/i), 'Converse')
-    await user.selectOptions(screen.getByLabelText(/max price/i), '100')
-    // Chuck 70 is $85 — still visible
-    expect(screen.getAllByRole('article').length).toBeGreaterThanOrEqual(1)
+  })
+
+  it('opens detail modal from View Details', async () => {
+    const user = userEvent.setup()
+    renderWithState({ recommendation: successResponse })
+    await user.click(screen.getAllByRole('button', { name: /view details/i })[0]!)
+    expect(screen.getByRole('dialog')).toBeInTheDocument()
   })
 })
