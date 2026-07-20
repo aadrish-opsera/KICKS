@@ -1,3 +1,4 @@
+import { Analytics } from '@vercel/analytics/react'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import ComparisonPage from './pages/ComparisonPage'
 import HomePage from './pages/HomePage'
@@ -11,6 +12,7 @@ function App() {
         <Route path="/results" element={<ResultsPage />} />
         <Route path="/comparison" element={<ComparisonPage />} />
       </Routes>
+      <Analytics />
     </BrowserRouter>
   )
 }
