@@ -24,4 +24,12 @@ export type RecommendationResponse = {
   queryTime: number
   /** Which sneaker data source produced the candidates (e.g. sneaker-db, sneaks-api). */
   sneakerApiSource: string
+  /** Present when AI ranking was skipped or failed over to degraded sorting. */
+  degradationReason?:
+    | 'quota_exhausted'
+    | 'gemini_error'
+    | 'gemini_timeout'
+    | 'timeout_guard'
+  /** Safe user-facing degradation message. */
+  userMessage?: string
 }
