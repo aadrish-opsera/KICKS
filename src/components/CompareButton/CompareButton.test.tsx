@@ -13,7 +13,7 @@ describe('CompareButton', () => {
     const user = userEvent.setup()
     const onClick = vi.fn()
     render(<CompareButton selectionCount={2} onClick={onClick} />)
-    const button = screen.getByRole('button', { name: /compare 2 sneakers/i })
+    const button = screen.getByRole('button', { name: /compare selected \(2\)/i })
     expect(button).toBeEnabled()
     await user.click(button)
     expect(onClick).toHaveBeenCalledTimes(1)

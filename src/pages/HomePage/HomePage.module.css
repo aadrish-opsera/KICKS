@@ -4,7 +4,6 @@
   gap: var(--spacing-lg);
   width: min(100%, 600px);
   margin: 0 auto;
-  padding: var(--spacing-lg) var(--spacing-md);
 }
 
 .header {
@@ -45,6 +44,7 @@
   justify-content: center;
   gap: var(--spacing-sm);
   width: 100%;
+  min-width: var(--touch-target-min);
   min-height: var(--touch-target-min);
   padding-inline: var(--spacing-lg);
   border: none;
@@ -58,19 +58,4 @@
 .submit:disabled {
   opacity: 0.55;
   cursor: not-allowed;
-}
-
-.submit:focus-visible {
-  outline: 2px solid var(--color-secondary);
-  outline-offset: 2px;
-}
-
-@media (min-width: 768px) {
-  .page {
-    padding: var(--spacing-xl);
-  }
-
-  .title {
-    font-size: 2rem;
-  }
 }

@@ -9,11 +9,13 @@ export default defineConfig({
       ['**/hooks/**/*.test.ts', 'jsdom'],
       ['**/components/**/*.test.ts', 'jsdom'],
       ['**/pages/**/*.test.ts', 'jsdom'],
+      ['**/tests/**', 'jsdom'],
       ['**/*.{test,spec}.{tsx,jsx}', 'jsdom'],
     ],
     setupFiles: ['./vitest.setup.ts'],
     include: [
       'tests/**/*.test.ts',
+      'tests/**/*.test.tsx',
       'src/**/__tests__/**/*.test.ts',
       'src/**/*.test.ts',
       'src/**/*.test.tsx',

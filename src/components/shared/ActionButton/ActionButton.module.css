@@ -1,0 +1,9 @@
+.root {
+  gap: var(--spacing-sm);
+}
+
+.icon {
+  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
+}

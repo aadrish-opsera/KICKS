@@ -2,6 +2,7 @@ import { useState, type ReactElement } from 'react'
 import type { Sneaker } from '../../shared/types/sneaker'
 import { sanitizeInput } from '../../utils/sanitize'
 import placeholderImage from '../../assets/sneaker-placeholder.svg'
+import { RESULTS } from '../../constants/uiText'
 import styles from './SneakerCard.module.css'
 
 export type SneakerCardProps = {
@@ -94,7 +95,7 @@ function SneakerCard({
             className={styles.details}
             onClick={() => onViewDetails(sneaker)}
           >
-            View Details
+            {RESULTS.viewDetailsButton}
           </button>
         ) : null}
         {sneaker.resaleLinks.length > 0 ? (
@@ -106,6 +107,7 @@ function SneakerCard({
                   href={link.url}
                   target="_blank"
                   rel="noopener noreferrer"
+                  aria-label={`Buy on ${link.platform}, opens in new tab`}
                 >
                   Buy on {link.platform}
                 </a>

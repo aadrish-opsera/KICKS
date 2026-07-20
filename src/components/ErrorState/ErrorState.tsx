@@ -1,4 +1,7 @@
 import type { ReactElement } from 'react'
+import { RefreshCw } from 'lucide-react'
+import ActionButton from '../shared/ActionButton/ActionButton'
+import { ERRORS } from '../../constants/uiText'
 import { getErrorMessage } from '../../utils/errorMessages'
 import styles from './ErrorState.module.css'
 
@@ -17,10 +20,12 @@ function ErrorState({ errorCode, onRetry }: ErrorStateProps): ReactElement {
       </div>
       <h2 className={styles.title}>{content.title}</h2>
       <p className={styles.message}>{content.message}</p>
-      <button type="button" className={styles.retry} onClick={onRetry}>
-        <span aria-hidden="true">↻</span>
-        Try Again
-      </button>
+      <ActionButton
+        className={styles.retry}
+        icon={RefreshCw}
+        label={ERRORS.retryButton}
+        onClick={onRetry}
+      />
     </div>
   )
 }
