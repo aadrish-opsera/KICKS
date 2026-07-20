@@ -159,47 +159,49 @@ export function mapSneaksResponse(
     throw new SneakerApiError('Malformed Sneaks-API response', { retryable: false })
   }
 
-  return records
-    .map((item, index) => {
-      if (!item || typeof item !== 'object') {
-        return null
-      }
-      const record = item as Record<string, unknown>
-      const retailPrice =
-        typeof record.retailPrice === 'number'
-          ? record.retailPrice
-          : typeof record.price === 'number'
-            ? record.price
-            : null
-      const name =
-        typeof record.shoeName === 'string'
-          ? record.shoeName
-          : typeof record.name === 'string'
-            ? record.name
-            : null
-      const brand = typeof record.brand === 'string' ? record.brand : null
-      if (!name || !brand || retailPrice === null) {
-        return null
-      }
-      if (retailPrice < minPrice || retailPrice > maxPrice) {
-        return null
-      }
+  const mapped: Array<SneakerResult | null> = records.map((item, index) => {
+    if (!item || typeof item !== 'object') {
+      return null
+    }
+    const record = item as Record<string, unknown>
+    const retailPrice =
+      typeof record.retailPrice === 'number'
+        ? record.retailPrice
+        : typeof record.price === 'number'
+          ? record.price
+          : null
+    const name =
+      typeof record.shoeName === 'string'
+        ? record.shoeName
+        : typeof record.name === 'string'
+          ? record.name
+          : null
+    const brand = typeof record.brand === 'string' ? record.brand : null
+    if (!name || !brand || retailPrice === null) {
+      return null
+    }
+    if (retailPrice < minPrice || retailPrice > maxPrice) {
+      return null
+    }
 
-      return {
-        id: typeof record.styleID === 'string' ? record.styleID : `sneaks-${index}`,
-        name,
-        brand,
-        colorway: typeof record.colorway === 'string' ? record.colorway : 'Unknown',
-        retailPrice,
-        resalePrice: typeof record.lowestResellPrice === 'number' ? record.lowestResellPrice : null,
-        imageUrl:
-          typeof record.thumbnail === 'string'
-            ? record.thumbnail
-            : 'https://example.com/missing-sneaker.jpg',
-        resaleLinks: [],
-        aiExplanation: null,
-        aiRating: null,
-      } satisfies SneakerResult
-    })
-    .filter((item): item is SneakerResult => item !== null)
+    const result: SneakerResult = {
+      id: typeof record.styleID === 'string' ? record.styleID : `sneaks-${index}`,
+      name,
+      brand,
+      colorway: typeof record.colorway === 'string' ? record.colorway : 'Unknown',
+      retailPrice,
+      resalePrice:
+        typeof record.lowestResellPrice === 'number' ? record.lowestResellPrice : null,
+      imageUrl:
+        typeof record.thumbnail === 'string'
+          ? record.thumbnail
+          : 'https://example.com/missing-sneaker.jpg',
+      resaleLinks: [],
+      aiExplanation: null,
+      aiRating: null,
+    }
+    return result
+  })
+
+  return mapped.filter((item): item is SneakerResult => item !== null)
 }
