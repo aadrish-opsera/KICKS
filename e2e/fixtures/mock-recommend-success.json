@@ -1,0 +1,79 @@
+{
+  "sneakers": [
+    {
+      "id": "snk-001",
+      "name": "Air Max 90",
+      "brand": "Nike",
+      "colorway": "White/Black",
+      "retailPrice": 130,
+      "resalePrice": 145,
+      "imageUrl": "https://example.com/air-max-90.png",
+      "resaleLinks": [
+        { "platform": "StockX", "url": "https://stockx.com/air-max-90" },
+        { "platform": "GOAT", "url": "https://goat.com/air-max-90" }
+      ],
+      "aiExplanation": "Great everyday shoe that matches your blue and Nike preference.",
+      "aiRating": 9
+    },
+    {
+      "id": "snk-010",
+      "name": "Dunk Low",
+      "brand": "Nike",
+      "colorway": "White/Black",
+      "retailPrice": 110,
+      "resalePrice": 125,
+      "imageUrl": "https://example.com/dunk-low.png",
+      "resaleLinks": [
+        { "platform": "StockX", "url": "https://stockx.com/dunk-low" }
+      ],
+      "aiExplanation": "Classic Nike look that fits school and play.",
+      "aiRating": 8
+    },
+    {
+      "id": "snk-011",
+      "name": "Gazelle",
+      "brand": "Adidas",
+      "colorway": "Blue/White",
+      "retailPrice": 90,
+      "resalePrice": 95,
+      "imageUrl": "https://example.com/gazelle.png",
+      "resaleLinks": [
+        { "platform": "GOAT", "url": "https://goat.com/gazelle" }
+      ],
+      "aiExplanation": "Soft and simple Adidas style under budget.",
+      "aiRating": 8
+    },
+    {
+      "id": "snk-012",
+      "name": "550",
+      "brand": "New Balance",
+      "colorway": "Grey/White",
+      "retailPrice": 120,
+      "resalePrice": 130,
+      "imageUrl": "https://example.com/550.png",
+      "resaleLinks": [
+        { "platform": "StockX", "url": "https://stockx.com/550" }
+      ],
+      "aiExplanation": "Comfy cushioning for long walks and school days.",
+      "aiRating": 7
+    },
+    {
+      "id": "snk-013",
+      "name": "Chuck 70",
+      "brand": "Converse",
+      "colorway": "Black/White",
+      "retailPrice": 85,
+      "resalePrice": 90,
+      "imageUrl": "https://example.com/chuck-70.png",
+      "resaleLinks": [
+        { "platform": "StockX", "url": "https://stockx.com/chuck-70" }
+      ],
+      "aiExplanation": "Lightweight everyday sneaker with a friendly look.",
+      "aiRating": 7
+    }
+  ],
+  "aiRankingAvailable": true,
+  "geminiQuotaRemaining": 200,
+  "queryTime": 800,
+  "sneakerApiSource": "sneaker-db"
+}

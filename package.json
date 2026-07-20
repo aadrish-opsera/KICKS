@@ -18,6 +18,9 @@
     "test:unit:coverage": "vitest run --coverage tests/unit src/services/__tests__ src/utils/__tests__ src/components api/__tests__",
     "test:integration": "vitest run tests/integration api/__tests__ tests/api",
     "test:coverage": "vitest run --coverage",
+    "test:e2e": "playwright test --config=playwright.config.mjs",
+    "test:e2e:chromium": "playwright test --config=playwright.config.mjs --project=chromium",
+    "test:e2e:smoke": "node scripts/run-e2e-library-smoke.mjs",
     "check:node-modules": "node scripts/check-node-modules.mjs",
     "check:sensitive-files": "node scripts/check-sensitive-files.mjs",
     "audit:check": "npm audit --omit=dev --audit-level=high",
@@ -37,6 +40,7 @@
   "devDependencies": {
     "@eslint/js": "^10.0.1",
     "@lhci/cli": "^0.15.1",
+    "@playwright/test": "^1.52.0",
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.2",
     "@testing-library/user-event": "^14.6.1",

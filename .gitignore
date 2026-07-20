@@ -22,6 +22,17 @@ coverage/
 # Lighthouse CI output
 .lighthouseci/
 
+# Playwright
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
+e2e-last-run.log
+pw-*.out
+pw-*.err
+playwright-run.*
+/node
+
 # Forge-managed local artifacts (never commit)
 .forge-commit-ready
 .forge/project-id
