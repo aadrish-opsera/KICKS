@@ -1,4 +1,5 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node'
+import { getColdStartMetrics } from './utils/cold-start'
 import { captureServerError } from '../src/shared/utils/captureServerError'
 import {
   probeGeminiApi,
@@ -81,6 +82,17 @@ export function createHealthHandler(deps: Partial<HealthHandlerDeps> = {}) {
     _req: VercelRequest,
     res: VercelResponse,
   ): Promise<void> {
+    const startedAt = Date.now()
+    const coldStart = getColdStartMetrics(startedAt)
+    console.info(
+      JSON.stringify({
+        endpoint: '/api/health',
+        message: 'cold_start',
+        isColdStart: coldStart.isColdStart,
+        initDurationMs: coldStart.initDurationMs,
+      }),
+    )
+
     res.setHeader('Content-Type', 'application/json')
     res.setHeader('Cache-Control', 'no-store')
 
