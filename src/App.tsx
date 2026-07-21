@@ -1,19 +1,24 @@
 import { Analytics } from '@vercel/analytics/react'
+import { lazy, Suspense } from 'react'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
+import LoadingFallback from './components/LoadingFallback/LoadingFallback'
 import { ComparisonProvider } from './context/ComparisonContext'
-import ComparisonPage from './pages/ComparisonPage/ComparisonPage'
-import HomePage from './pages/HomePage/HomePage'
-import ResultsPage from './pages/ResultsPage/ResultsPage'
+
+const HomePage = lazy(() => import('./pages/HomePage/HomePage'))
+const ResultsPage = lazy(() => import('./pages/ResultsPage/ResultsPage'))
+const ComparisonPage = lazy(() => import('./pages/ComparisonPage/ComparisonPage'))
 
 function App() {
   return (
     <BrowserRouter>
       <ComparisonProvider>
-        <Routes>
-          <Route path="/" element={<HomePage />} />
-          <Route path="/results" element={<ResultsPage />} />
-          <Route path="/comparison" element={<ComparisonPage />} />
-        </Routes>
+        <Suspense fallback={<LoadingFallback />}>
+          <Routes>
+            <Route path="/" element={<HomePage />} />
+            <Route path="/results" element={<ResultsPage />} />
+            <Route path="/comparison" element={<ComparisonPage />} />
+          </Routes>
+        </Suspense>
       </ComparisonProvider>
       <Analytics />
     </BrowserRouter>

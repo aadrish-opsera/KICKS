@@ -87,3 +87,15 @@ npm run build && npm run test:perf:lighthouse
 - `test:perf:bundle` — gzipped JS budget under `dist/assets`
 - `test:perf:lighthouse` — LHCI via `lighthouserc.cjs` (simulated 4G, 3 runs, median TTI ≤3s)
 - `test:perf` — runs api + bundle + client + lighthouse sequentially (build first)
+
+## Cold start and bundle analysis
+
+Serverless handlers (`/api/recommend`, `/api/health`) log `isColdStart` and `initDurationMs` on each invocation. Frontend routes use `React.lazy` + vendor `manualChunks`. See `DEPENDENCIES.md` before adding production deps over 50KB.
+
+```bash
+npm run build:analyze          # writes dist/stats.html + artifacts/bundle-analysis.md
+npm run audit:deps             # serverless runtime package sizes; flag >100KB
+npm run check:function-size    # api/ + shared src + @sentry/node must be < 5MB
+npm run check:dep-approvals    # production deps >50KB must be listed in DEPENDENCIES.md
+npm run build && npm run test:perf:bundle
+```

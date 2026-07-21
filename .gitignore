@@ -3,6 +3,8 @@ node_modules/
 
 # Build
 dist/
+dist-stats/
+stats.html
 .vercel/
 
 # Env

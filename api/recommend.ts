@@ -1,5 +1,6 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node'
 import { randomUUID } from 'node:crypto'
+import { getColdStartMetrics } from './utils/cold-start'
 import { BudgetValidator } from '../src/services/budget-validator'
 import { DegradedRanker } from '../src/services/degraded-ranker'
 import {
@@ -60,10 +61,18 @@ export function createRecommendHandler(deps: Partial<RecommendHandlerDeps> = {})
 
   return async function handler(req: VercelRequest, res: VercelResponse): Promise<void> {
     const startedAt = config.now()
+    const coldStart = getColdStartMetrics(startedAt)
     const requestId = config.createRequestId()
     res.setHeader('Content-Type', 'application/json')
     res.setHeader('Cache-Control', 'no-store')
     res.setHeader('X-Request-Id', requestId)
+
+    config.logger.info({
+      requestId,
+      message: 'cold_start',
+      isColdStart: coldStart.isColdStart,
+      initDurationMs: coldStart.initDurationMs,
+    })
 
     if (req.method !== 'POST') {
       sendError(res, 405, {
